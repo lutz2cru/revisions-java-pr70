@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Révisions Java PR70</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --paper:#fffdf8; --ink:#1d1b16; --muted:#6d685c; --line:#ddd6c6;
+  --accent:#c2410c; --accent-soft:#fde7d9; --ok:#15803d; --ok-soft:#dcfce7; --bad:#b91c1c; --bad-soft:#fee2e2; --warn:#b45309; --warn-soft:#fef3c7;
+  --code-bg:#1f1d1a; --code-ink:#ece6d8;
+  --l1:#2563eb; --l2:#7c3aed; --l3:#c2410c; --l4:#0f766e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.5}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+p code, li code, .q code, .opt code, .expl code, td code{background:#ece6d8;padding:1px 5px;border-radius:4px;font-size:.88em}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 80px}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:24px;flex-wrap:wrap}
+header.top h1{font-size:28px;margin:0;letter-spacing:-.02em}
+header.top h1 span{color:var(--accent)}
+header.top .sub{color:var(--muted);font-size:14px}
+.btn{font:inherit;font-weight:600;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:9px 16px;border-radius:8px;cursor:pointer;transition:transform .05s}
+.btn:hover{background:#fff}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:#000}
+.btn.ghost{border-color:var(--line);font-weight:500}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:28px 0 10px}
+.chip{font:inherit;font-size:14px;border:1.5px solid var(--line);background:var(--paper);padding:6px 12px;border-radius:999px;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.lvcard{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.lvcard .n{font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:600;font-size:13px}
+.lvcard .t{font-weight:600;margin-top:2px}
+.lvcard .d{font-size:13px;color:var(--muted)}
+.lvcard.on{border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.lvcard:not(.on){opacity:.55}
+@media (max-width:700px){.levels{grid-template-columns:1fr 1fr}}
+table.grid{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+table.grid th,table.grid td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+table.grid th:first-child,table.grid td:first-child{text-align:left}
+table.grid thead th{background:#ede8dc;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.cell{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px}
+.bar{display:inline-block;width:46px;height:6px;background:#e6e0d2;border-radius:3px;overflow:hidden;vertical-align:middle}
+.bar i{display:block;height:100%;background:var(--ok)}
+.tag{display:inline-block;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;font-weight:600;padding:2px 8px;border-radius:5px;color:#fff}
+.tag.l1{background:var(--l1)}.tag.l2{background:var(--l2)}.tag.l3{background:var(--l3)}.tag.l4{background:var(--l4)}
+.tag.tp{background:var(--paper);color:var(--ink);border:1.5px solid var(--ink)}
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.progress{height:8px;background:#e6e0d2;border-radius:4px;overflow:hidden;margin-bottom:22px}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+.q{font-size:18px;font-weight:500;margin:4px 0 16px}
+pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:14px 0;margin:0 0 16px;overflow-x:auto;font-size:13.5px;line-height:1.6}
+pre.code .ln{display:flex;padding:0 16px 0 0;min-height:1.6em}
+pre.code .ln .no{width:40px;flex:none;text-align:right;padding-right:14px;color:#6f675a;user-select:none}
+pre.code .ln .tx{white-space:pre;flex:1}
+pre.code.review .ln{cursor:pointer;border-left:3px solid transparent}
+pre.code.review .ln:hover{background:#2c2925}
+pre.code.review .ln.sel{background:#3b2d16;border-left-color:#f59e0b}
+pre.code.review .ln.hit{background:#14361f;border-left-color:#22c55e}
+pre.code.review .ln.miss{background:#3a2a0b;border-left-color:#f59e0b;outline:1px dashed #f59e0b;outline-offset:-1px}
+pre.code.review .ln.fp{background:#3d1717;border-left-color:#ef4444}
+pre.code.review.done .ln{cursor:default}
+.c-kw{color:#f0a36b;font-weight:600}.c-str{color:#a7d58a}.c-com{color:#857c6d;font-style:italic}.c-num{color:#e6c07b}.c-type{color:#8cc4ef}.c-ann{color:#d6a3e8}
+input.blank{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;background:#2f2b26;color:#fff;border:none;border-bottom:2px solid #f0a36b;border-radius:3px 3px 0 0;padding:1px 5px;margin:0 1px;outline:none;min-width:3ch}
+input.blank:focus{background:#3d3832}
+input.blank.ok{border-bottom-color:#22c55e;background:#14361f}
+input.blank.ko{border-bottom-color:#ef4444;background:#3d1717}
+.solution{display:inline-block;font-size:12px;color:#86efac;margin-left:2px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;font:inherit;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:11px 14px;cursor:pointer;color:var(--ink)}
+.opt:hover{border-color:var(--ink)}
+.opt .k{flex:none;width:24px;height:24px;border-radius:6px;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;font-weight:600}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.right .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt.wrong .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt:disabled:not(.right):not(.wrong){opacity:.6}
+.feedback{margin-top:18px;border-radius:9px;padding:14px 16px;border:1.5px solid}
+.feedback.good{background:var(--ok-soft);border-color:var(--ok)}
+.feedback.bad{background:var(--bad-soft);border-color:var(--bad)}
+.feedback.mid{background:var(--warn-soft);border-color:var(--warn)}
+.feedback b.v{display:block;margin-bottom:4px}
+.buglist{list-style:none;padding:0;margin:10px 0 0}
+.buglist li{padding:8px 0;border-top:1px solid rgba(0,0,0,.1)}
+.buglist .st{font-weight:700;margin-right:6px}
+.hint{font-size:14px;color:var(--muted);margin:-6px 0 12px}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.6;margin-left:6px}
+.end{text-align:center}
+.end .big{font-size:56px;font-weight:700;letter-spacing:-.03em;margin:6px 0}
+.end table{margin-top:18px}
+.missed{text-align:left;margin-top:20px}
+.missed li{margin:4px 0;font-size:14px}
+.note{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Révisions Java <span>PR70</span></h1>
+      <div class="sub">TP1 → TP7 · des bases à la lecture, la revue et la complétion de code</div>
+    </div>
+    <button class="btn ghost" id="homeBtn" onclick="showHome()">← Accueil</button>
+  </header>
+
+  <!-- ACCUEIL -->
+  <section id="home">
+    <h2>1 · Choisis les TP</h2>
+    <div class="row" id="tpChips"></div>
+
+    <h2>2 · Choisis les niveaux</h2>
+    <div class="levels" id="lvCards"></div>
+
+    <h2>3 · Lance-toi</h2>
+    <div class="row">
+      <button class="btn primary" onclick="start('parcours')">Parcours progressif <span class="kbd">niveau 1 → 4</span></button>
+      <button class="btn" onclick="start('melange')">Tout mélangé</button>
+      <button class="btn" id="errBtn" onclick="start('erreurs')">Refaire mes erreurs</button>
+    </div>
+    <p class="note" id="selInfo"></p>
+
+    <h2>Ta progression</h2>
+    <table class="grid" id="statTable"></table>
+    <div class="row" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn ghost" onclick="resetStats()" style="font-size:13px;padding:6px 12px">Réinitialiser la progression</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="qhead">
+      <div class="row" id="qTags"></div>
+      <div class="mono" id="qCount" style="font-size:14px;color:var(--muted)"></div>
+    </div>
+    <div class="progress"><i id="qBar"></i></div>
+    <div class="card" id="qCard"></div>
+  </section>
+
+  <!-- FIN -->
+  <section id="end" class="hidden"></section>
+</div>
+
+<script>
+// Banque de questions — Révisions PR70 (TP1 → TP7)
+// type: qcm | review | fill ; lvl: 1 bases, 2 lire le code, 3 revue de code, 4 code à trous
+const R = String.raw;
+
+const TPS = {
+  1: "TP1 · Bases, Scanner, String, encapsulation",
+  2: "TP2 · Héritage, abstraction, interfaces, polymorphisme",
+  3: "TP3 · Exceptions & collections",
+  4: "TP4 · Swing & calculatrice",
+  5: "TP5 · Fichiers",
+  6: "TP6 · Dessiner avec Java",
+  7: "TP7 · Graphes & Dijkstra",
+};
+
+const QUESTIONS = [
+/* =========================== TP1 =========================== */
+{ id:"1-1-a", tp:1, lvl:1, type:"qcm",
+  q:"Après <code>int age = sc.nextInt();</code> puis <code>String nom = sc.nextLine();</code>, le nom est vide sans que l'utilisateur ait pu taper. Pourquoi ?",
+  options:[
+    "nextInt() lit le nombre mais laisse le retour à la ligne '\\n' dans le buffer : nextLine() le lit immédiatement et renvoie une chaîne vide",
+    "nextLine() doit toujours être appelé avant nextInt()",
+    "Un Scanner ne peut lire qu'un seul type de donnée",
+    "nextInt() vide le buffer, donc nextLine() n'a plus rien à lire"],
+  answer:0,
+  expl:"<code>nextInt()</code> s'arrête juste avant le <code>'\\n'</code> (touche Entrée). <code>nextLine()</code> lit jusqu'au prochain <code>'\\n'</code>… qui est déjà là : elle renvoie <code>\"\"</code>."},
+{ id:"1-1-b", tp:1, lvl:1, type:"qcm",
+  q:"Quelle correction règle le problème du <code>nextInt()</code> suivi d'un <code>nextLine()</code> ?",
+  options:[
+    "Ajouter un <code>sc.nextLine();</code> juste après le <code>nextInt()</code> pour consommer le '\\n' restant",
+    "Remplacer <code>nextLine()</code> par <code>next()</code> dans tous les cas",
+    "Créer un deuxième Scanner sur System.in",
+    "Appeler <code>sc.close()</code> entre les deux lectures"],
+  answer:0,
+  expl:"Autre solution propre : tout lire avec <code>nextLine()</code> et convertir avec <code>Integer.parseInt(sc.nextLine())</code>. Créer un 2ᵉ Scanner ou fermer System.in pose d'autres problèmes."},
+{ id:"1-1-c", tp:1, lvl:1, type:"qcm",
+  q:"<code>String s1 = \"Hello\"; String s2 = \"Hello\";</code> — que vaut <code>s1 == s2</code> et pourquoi ?",
+  options:[
+    "true : les littéraux identiques sont partagés dans le <i>String pool</i>, s1 et s2 pointent vers le même objet",
+    "false : == compare toujours le contenu caractère par caractère",
+    "false : chaque littéral crée un nouvel objet sur le tas",
+    "Erreur de compilation : on ne peut pas utiliser == sur des String"],
+  answer:0,
+  expl:"<code>==</code> compare les <b>références</b>. Les littéraux sont « internés » dans le pool : même référence. En revanche <code>new String(\"Hello\")</code> force un nouvel objet sur le tas → <code>s1 == s3</code> est false."},
+{ id:"1-1-d", tp:1, lvl:1, type:"qcm",
+  q:"Quelle est la bonne façon de comparer le <b>contenu</b> de deux chaînes ?",
+  options:["<code>a.equals(b)</code>","<code>a == b</code>","<code>a.hashCode() == b</code>","<code>a.compareTo(b) == 1</code>"],
+  answer:0, expl:"<code>equals</code> compare le contenu. <code>equalsIgnoreCase</code> ignore la casse. <code>compareTo</code> renvoie 0 quand les chaînes sont égales (pas 1)."},
+{ id:"1-1-e", tp:1, lvl:1, type:"qcm",
+  q:"Le thermomètre doit avoir un taux d'erreur aléatoire entre −0.5 et +0.5. Quelle expression convient ?",
+  options:["<code>Math.random() - 0.5</code>","<code>Math.random() * 0.5</code>","<code>Math.random(-0.5, 0.5)</code>","<code>(int) Math.random() - 0.5</code>"],
+  answer:0, expl:"<code>Math.random()</code> renvoie un double dans [0 ; 1[. On décale de −0.5 → [−0.5 ; 0.5[. <code>(int) Math.random()</code> vaut toujours 0."},
+{ id:"1-1-f", tp:1, lvl:1, type:"qcm",
+  q:"Que signifie <b>l'encapsulation</b> en orienté objet ?",
+  options:[
+    "Les attributs sont <code>private</code> et on y accède via des méthodes (getters/setters) qui contrôlent l'accès",
+    "Toutes les classes sont dans le même fichier",
+    "Les attributs sont <code>public</code> pour être faciles d'accès",
+    "Une classe hérite d'une autre classe"],
+  answer:0, expl:"On cache l'état interne : la classe garde le contrôle (validation dans les setters, invariants). C'est l'une des 3 erreurs de l'audit de code du TP1."},
+{ id:"1-1-g", tp:1, lvl:1, type:"qcm",
+  q:"Pour tester si une chaîne contient les 6 voyelles <b>sans tenir compte de la casse</b> (\"RYTHME\"), le plus simple est :",
+  options:["Convertir d'abord avec <code>toLowerCase()</code> puis faire les <code>contains</code>","Utiliser <code>==</code> sur chaque caractère","Utiliser <code>equals(\"aeiouy\")</code>","Ce n'est pas possible avec la classe String"],
+  answer:0, expl:"<code>mot.toLowerCase().contains(\"a\") && …</code>. Rappel : les String sont <b>immuables</b>, toLowerCase() renvoie une nouvelle chaîne."},
+
+{ id:"1-2-a", tp:1, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`String texte = "banana";
+String motif = "ana";
+int count = 0;
+int pos = texte.indexOf(motif);
+while (pos != -1) {
+    count++;
+    pos = texte.indexOf(motif, pos + 1);
+}
+System.out.println(count);`,
+  options:["2","1","3","Boucle infinie"], answer:0,
+  expl:"\"ana\" est trouvé à l'indice 1 puis à l'indice 3 (chevauchement possible car on repart de <code>pos + 1</code>). Avec <code>pos + motif.length()</code> on obtiendrait 1."},
+{ id:"1-2-b", tp:1, lvl:2, type:"qcm",
+  q:"Qu'affichent ces trois lignes ?",
+  code:R`String s1 = "Java";
+String s2 = new String("Java");
+String s3 = s2;
+System.out.println(s1 == s2);
+System.out.println(s1.equals(s2));
+System.out.println(s2 == s3);`,
+  options:["false / true / true","true / true / true","false / true / false","false / false / true"], answer:0,
+  expl:"s1 est dans le pool, s2 est un nouvel objet sur le tas → références différentes. Même contenu → equals true. s3 recopie la <b>référence</b> de s2 → même objet."},
+{ id:"1-2-c", tp:1, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`int a = 7, b = 2;
+double r = a / b;
+System.out.println(r);`,
+  options:["3.0","3.5","3","Erreur de compilation"], answer:0,
+  expl:"<code>a / b</code> est une division <b>entière</b> (int/int = 3), convertie ensuite en double → 3.0. Il faut caster : <code>(double) a / b</code>. C'est exactement le <code>(float) dividende / diviseur</code> du TP3."},
+{ id:"1-2-d", tp:1, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`String mot = "RYTHME";
+boolean ok = mot.contains("y") && mot.contains("e");
+System.out.println(ok);`,
+  options:["false","true","Erreur à l'exécution","RYTHME"], answer:0,
+  expl:"<code>contains</code> est sensible à la casse : \"RYTHME\" contient \"Y\" mais pas \"y\". Correction : <code>mot.toLowerCase().contains(\"y\")</code>."},
+{ id:"1-2-e", tp:1, lvl:2, type:"qcm",
+  q:"Thermomètre défectueux : qu'affiche ce code ?",
+  code:R`double f = 212;
+double c = (f - 32) / 1.8;
+double tauxErreur = -0.2;
+System.out.println(c + tauxErreur);`,
+  options:["99.8","100.0","100.2","211.8"], answer:0,
+  expl:"(212 − 32) / 1.8 = 100 °C, puis on ajoute le taux d'erreur −0.2 → 99.8."},
+
+{ id:"1-3-a", tp:1, lvl:3, type:"review",
+  q:"Audit du code « généré par IA » du TP1 : il compile mais contient <b>3 erreurs graves</b> (encapsulation, mémoire/exception, comparaison d'objets). Clique sur les lignes fautives.",
+  code:R`class Etudiant {
+    public String nom;
+    public String prenom;
+    public int age;
+
+    public Etudiant(String n, String p, int a) {
+        nom = n; prenom = p; age = a;
+    }
+}
+
+class Groupe {
+    public Etudiant[] liste;
+
+    public Groupe(int tailleMax) {
+        liste = new Etudiant[tailleMax];
+    }
+
+    public Etudiant chercherParNom(String nomRecherche) {
+        for (int i = 0; i < liste.length; i++) {
+            if (liste[i] != null && liste[i].nom == nomRecherche) {
+                return liste[i];
+            }
+        }
+        return null;
+    }
+
+    public double calculAgeMoyen() {
+        double somme = 0;
+        for (int i = 0; i < liste.length; i++) {
+            somme = somme + liste[i].age;
+        }
+        return somme / liste.length;
+    }
+}`,
+  bugs:[
+    {lines:[2,3,4,12], label:"Encapsulation violée", expl:"Attributs <code>public</code> : n'importe qui peut écrire <code>e.age = -5</code>. Il faut <code>private</code> + getters/setters (et valider l'âge)."},
+    {lines:[20], label:"Comparaison de String avec ==", expl:"<code>==</code> compare les références : une chaîne saisie au clavier ne sera jamais <code>==</code> au nom stocké. Utiliser <code>getNom().equals(nomRecherche)</code>."},
+    {lines:[30,32], label:"NullPointerException + moyenne fausse", expl:"Le tableau a des cases <code>null</code> (groupe pas plein) → <code>liste[i].age</code> lève une NullPointerException. Il faut tester <code>!= null</code>, compter les étudiants réels et diviser par ce compte (et gérer le cas 0)."}
+  ]},
+
+{ id:"1-4-a", tp:1, lvl:4, type:"fill",
+  q:"Corrige la lecture âge puis nom (problème du buffer du Scanner).",
+  code:R`Scanner sc = new Scanner([[0]]);
+System.out.print("Âge : ");
+int age = sc.[[1]]();
+sc.[[2]]();          // consomme le '\n' resté dans le buffer
+System.out.print("Nom : ");
+String nom = sc.nextLine();
+System.out.println("Vous vous appelez " + nom + " et vous avez " + age + " ans.");`,
+  answers:[["System.in"],["nextInt"],["nextLine"]],
+  expl:"Le <code>sc.nextLine()</code> « à vide » absorbe le retour à la ligne laissé par <code>nextInt()</code>."},
+{ id:"1-4-b", tp:1, lvl:4, type:"fill",
+  q:"Corrige l'audit : encapsulation + comparaison de chaînes.",
+  code:R`public class Etudiant {
+    [[0]] String nom;
+    [[0]] int age;
+
+    public String getNom() {
+        [[1]]
+    }
+}
+
+// dans Groupe.chercherParNom
+if (liste[i] != null && liste[i].getNom().[[2]](nomRecherche)) {
+    return liste[i];
+}`,
+  answers:[["private"],["return nom;","return this.nom;"],["equals","equalsIgnoreCase"]],
+  expl:"Les blancs numérotés pareil attendent la même réponse. <code>equals</code> compare le contenu, pas l'adresse."},
+{ id:"1-4-c", tp:1, lvl:4, type:"fill",
+  q:"Addition de matrices de capteurs : toute somme négative est forcée à 0 avec une alerte.",
+  code:R`public Matrice additionner(Matrice autre) {
+    Matrice res = new Matrice(lignes, colonnes);
+    for (int i = 0; i < [[0]]; i++) {
+        for (int j = 0; j < [[1]]; j++) {
+            double somme = this.data[i][j] + [[2]];
+            if ([[3]]) {
+                System.out.println("[ALERTE] Défaillance du capteur à la position ("
+                                   + i + ", " + j + ") corrigée.");
+                somme = 0;
+            }
+            res.data[i][j] = somme;
+        }
+    }
+    return res;
+}`,
+  answers:[["lignes","this.lignes","data.length","this.data.length"],["colonnes","this.colonnes","data[0].length","this.data[0].length","data[i].length"],["autre.data[i][j]"],["somme < 0","somme < 0.0","0 > somme"]],
+  expl:"On parcourt ligne par ligne, colonne par colonne. Il faudrait aussi vérifier en amont que les deux matrices ont les mêmes dimensions (sinon lever une exception)."},
+
+/* =========================== TP2 =========================== */
+{ id:"2-1-a", tp:2, lvl:1, type:"qcm",
+  q:"Que peut-on dire d'une classe <code>abstract</code> comme <code>Salarie</code> ?",
+  options:["On ne peut pas l'instancier avec <code>new</code>, mais elle peut avoir des attributs, des constructeurs et des méthodes concrètes","Elle ne peut contenir que des méthodes abstraites","Elle ne peut pas avoir de constructeur","Elle ne peut pas être utilisée comme type de variable"],
+  answer:0, expl:"<code>new Salarie(...)</code> est interdit, mais <code>Salarie s = new Vendeur(...)</code> est autorisé. Son constructeur est appelé via <code>super(...)</code> par les sous-classes."},
+{ id:"2-1-b", tp:2, lvl:1, type:"qcm",
+  q:"Où définir <code>calculerPaye()</code> pour que chaque type de salarié ait son propre calcul ?",
+  options:["Méthode <code>abstract</code> déclarée dans Salarie, redéfinie (<code>@Override</code>) dans chaque sous-classe","Dans Personne, avec un <code>if</code> sur le type de salarié","Uniquement dans le main","Dans chaque sous-classe, sans rien déclarer dans Salarie"],
+  answer:0, expl:"Déclarer la méthode dans Salarie permet d'appeler <code>s.calculerPaye()</code> sur n'importe quel salarié (polymorphisme). Sans déclaration dans Salarie, le compilateur refuserait l'appel."},
+{ id:"2-1-c", tp:2, lvl:1, type:"qcm",
+  q:"Un Doctorant fait de la recherche, peut intervenir dans des cours et en suivre. Quelle modélisation est possible en Java ?",
+  options:["<code>class Doctorant extends Personne implements SuitDesCours, IntervientEnCours, MembreLabo</code>","<code>class Doctorant extends Etudiant, Enseignant, Chercheur</code>","<code>class Doctorant implements Personne</code>","<code>interface Doctorant extends Personne</code> (Personne étant une classe)"],
+  answer:0, expl:"Java interdit l'héritage multiple de <b>classes</b>, mais une classe peut implémenter <b>plusieurs interfaces</b>. Les interfaces représentent des capacités communes à plusieurs branches."},
+{ id:"2-1-d", tp:2, lvl:1, type:"qcm",
+  q:"Qu'est-ce que le <b>polymorphisme</b> (liaison dynamique) ?",
+  options:["À l'exécution, la méthode appelée est celle du type <b>réel</b> de l'objet, pas celle du type déclaré de la variable","Le fait d'avoir plusieurs constructeurs","Le fait de convertir un int en double","Le choix de la méthode se fait à la compilation selon le type de la variable"],
+  answer:0, expl:"Dans un <code>ArrayList&lt;Media&gt;</code>, <code>m.prixLocation(d)</code> appelle la version CD, Livre ou DVD selon l'objet réellement stocké."},
+{ id:"2-1-e", tp:2, lvl:1, type:"qcm",
+  q:"À propos de <code>super(nom, prenom)</code> dans un constructeur :",
+  options:["Il appelle le constructeur de la classe mère et doit être la <b>première instruction</b>","Il peut être placé n'importe où dans le constructeur","Il appelle une méthode de la classe fille","Il est interdit si la classe mère est abstraite"],
+  answer:0, expl:"Si on ne l'écrit pas, Java insère <code>super()</code> sans argument — ce qui ne compile pas si la classe mère n'a pas de constructeur vide."},
+{ id:"2-1-f", tp:2, lvl:1, type:"qcm",
+  q:"On veut toutes les personnes inscrites à au moins un cours, <b>sans doublon</b> (une personne peut suivre plusieurs cours). Quelle collection ?",
+  options:["Un <code>Set</code> (ex : HashSet), avec equals/hashCode cohérents dans Personne","Une <code>ArrayList</code>","Un tableau <code>Personne[]</code>","Une <code>LinkedList</code> triée"],
+  answer:0, expl:"Un Set refuse les éléments égaux. Sans redéfinir equals/hashCode, l'égalité reste celle des références (ce qui suffit si ce sont les mêmes objets)."},
+{ id:"2-1-g", tp:2, lvl:1, type:"qcm",
+  q:"Le volume utile ne concerne que les utilitaires et camionnettes. Quelle organisation évite la duplication ?",
+  options:["Une classe intermédiaire (ex : <code>VehiculeChargement</code>) qui porte le volume, dont héritent Utilitaire et Camionnette","Mettre le volume dans Vehicule et le laisser à 0 pour les autres","Dupliquer l'attribut volume dans Utilitaire et Camionnette","Faire hériter PetiteVoiture de Utilitaire"],
+  answer:0, expl:"Les attributs communs vont dans Vehicule ; les attributs partagés par une sous-famille vont dans une classe intermédiaire. Pour la recherche par volume, on ne garde que les <code>instanceof VehiculeChargement</code>."},
+
+{ id:"2-2-a", tp:2, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`abstract class Media {
+    protected double prix;
+    Media(double prix) { this.prix = prix; }
+    abstract double prixLocation(int duree);
+}
+class CD extends Media {
+    CD(double prix) { super(prix); }
+    double prixLocation(int jours) { return prix * jours; }
+}
+class Livre extends Media {
+    Livre(double prix) { super(prix); }
+    double prixLocation(int semaines) { return prix * semaines + 1; }
+}
+// main
+List<Media> medias = new ArrayList<>();
+medias.add(new CD(2));
+medias.add(new Livre(3));
+double total = 0;
+for (Media m : medias) total += m.prixLocation(2);
+System.out.println(total);`,
+  options:["11.0","10.0","12.0","Erreur : Media est abstraite"], answer:0,
+  expl:"CD : 2 × 2 = 4. Livre : 3 × 2 + 1 = 7. Total 11.0. Le type déclaré est Media, mais chaque appel utilise la méthode du type réel."},
+{ id:"2-2-b", tp:2, lvl:2, type:"qcm",
+  q:"Paye d'un technicien (heures sup majorées de 30 %) : que vaut <code>paye</code> ?",
+  code:R`double taux = 20;
+int heures = 160, seuil = 150;
+double paye = Math.min(heures, seuil) * taux
+            + Math.max(0, heures - seuil) * taux * 1.3;`,
+  options:["3260.0","3200.0","3300.0","4160.0"], answer:0,
+  expl:"150 h × 20 = 3000 ; 10 h sup × 20 × 1.3 = 260 ; total 3260."},
+{ id:"2-2-c", tp:2, lvl:2, type:"qcm",
+  q:"Que se passe-t-il ?",
+  code:R`abstract class Personne { /* nom, prenom */ }
+interface SuitDesCours { void suivre(String cours); }
+class Etudiant extends Personne implements SuitDesCours {
+    public void suivre(String cours) { System.out.println("Suit " + cours); }
+}
+// main
+Personne p = new Etudiant();
+p.suivre("PR70");`,
+  options:["Erreur de compilation : le type déclaré Personne ne possède pas suivre()","Affiche « Suit PR70 »","ClassCastException à l'exécution","Erreur : Etudiant ne peut pas hériter et implémenter en même temps"],
+  answer:0, expl:"Le compilateur ne regarde que le <b>type statique</b> (Personne). Solutions : <code>SuitDesCours p = new Etudiant();</code> ou <code>if (p instanceof SuitDesCours s) s.suivre(...)</code>."},
+{ id:"2-2-d", tp:2, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`class Vehicule {
+    protected String marque;
+    Vehicule(String m) { marque = m; }
+    public String toString() { return "Marque : " + marque; }
+}
+class Utilitaire extends Vehicule {
+    private double volume;
+    Utilitaire(String m, double v) { super(m); volume = v; }
+    public String toString() {
+        return super.toString() + " | Volume : " + volume + " m3";
+    }
+}
+// main
+Vehicule v = new Utilitaire("Renault", 12.5);
+System.out.println(v);`,
+  options:["Marque : Renault | Volume : 12.5 m3","Marque : Renault","Utilitaire@1b6d3586","Erreur : volume est private"],
+  answer:0, expl:"println appelle <code>toString()</code> du type réel (Utilitaire), qui réutilise celle de la mère avec <code>super.toString()</code>."},
+
+{ id:"2-3-a", tp:2, lvl:3, type:"review",
+  q:"Code du magasin culturel. Trouve les <b>3 problèmes</b> (comparaison, vérifications manquantes, mauvaise utilisation de l'objet).",
+  code:R`public class Magasin {
+    private List<Media> medias = new ArrayList<>();
+    private List<Loueur> loueurs = new ArrayList<>();
+
+    public Media chercher(String titre) {
+        for (Media m : medias) {
+            if (m.getTitre() == titre) return m;
+        }
+        return null;
+    }
+
+    public void louer(String titre, Loueur l) {
+        Media m = chercher(titre);
+        l.getLocations().add(m);
+        m.setLoue(true);
+    }
+
+    public double prix(Media m, int duree) {
+        if (m instanceof CD) return ((CD) m).getPrix() * duree;
+        else if (m instanceof Livre) return ((Livre) m).getPrix() * duree;
+        else return 0;
+    }
+}`,
+  bugs:[
+    {lines:[7], label:"== sur des String", expl:"Comparer des titres avec <code>==</code> compare les références. Utiliser <code>equals</code> (ou <code>equalsIgnoreCase</code>)."},
+    {lines:[13,14,15], label:"Aucune vérification avant la location", expl:"Le sujet exige de vérifier que le média existe (sinon <code>m</code> est null → NullPointerException ligne 15), que le loueur est connu du magasin et que le média n'est pas déjà loué. Il faut des messages explicites (ou des exceptions)."},
+    {lines:[19,20,21], label:"instanceof au lieu du polymorphisme", expl:"Chaîne de <code>instanceof</code> : les BD et DVD valent 0 €, et chaque nouveau média oblige à modifier cette méthode. Il faut une méthode abstraite <code>prixLocation(int duree)</code> dans Media, redéfinie dans chaque sous-classe, puis <code>return m.prixLocation(duree);</code>."}
+  ]},
+
+{ id:"2-4-a", tp:2, lvl:4, type:"fill",
+  q:"Complète la hiérarchie Salarie / Vendeur (vendeur = fixe + 1 % des ventes).",
+  code:R`public abstract class Salarie extends Personne {
+    protected double fixe;
+
+    public Salarie(String nom, String prenom, double fixe) {
+        [[0]](nom, prenom);
+        this.fixe = fixe;
+    }
+
+    public [[1]] double calculerPaye();
+}
+
+public class Vendeur [[2]] Salarie {
+    private double ventes;
+
+    public Vendeur(String nom, String prenom, double fixe, double ventes) {
+        super(nom, prenom, fixe);
+        this.ventes = ventes;
+    }
+
+    [[3]]
+    public double calculerPaye() {
+        return [[4]];
+    }
+}`,
+  answers:[["super"],["abstract"],["extends"],["@Override"],["fixe + 0.01 * ventes","fixe + ventes * 0.01","fixe + ventes / 100","this.fixe + 0.01 * this.ventes","this.fixe + this.ventes * 0.01","fixe + 0.01*ventes","0.01 * ventes + fixe"]],
+  expl:"<code>@Override</code> n'est pas obligatoire mais fait vérifier au compilateur qu'on redéfinit bien une méthode existante (évite les fautes de signature)."},
+{ id:"2-4-b", tp:2, lvl:4, type:"fill",
+  q:"Interfaces de l'université + recherche des personnes inscrites à au moins un cours, sans doublon.",
+  code:R`public interface SuitDesCours {
+    List<Cours> getCoursSuivis();
+}
+
+public class Doctorant extends Personne [[0]] SuitDesCours, IntervientEnCours, MembreLabo {
+    // ...
+}
+
+public static Set<Personne> personnesInscrites(List<Cours> cours) {
+    Set<Personne> res = new [[1]]<>();
+    for (Cours c : cours) {
+        res.[[2]](c.getInscrits());
+    }
+    return res;
+}`,
+  answers:[["implements"],["HashSet","LinkedHashSet","TreeSet"],["addAll"]],
+  expl:"<code>implements</code> pour les interfaces (plusieurs possibles, séparées par des virgules). <code>addAll</code> ajoute toute une collection ; le Set élimine les doublons."},
+
+/* =========================== TP3 =========================== */
+{ id:"3-1-a", tp:3, lvl:1, type:"qcm",
+  q:"Différence entre <code>throw</code> et <code>throws</code> ?",
+  options:["<code>throw</code> lance une exception ; <code>throws</code> déclare dans la signature qu'une méthode peut en lancer","Ce sont deux orthographes du même mot-clé","<code>throws</code> lance plusieurs exceptions à la fois","<code>throw</code> se met dans la signature, <code>throws</code> dans le corps"],
+  answer:0, expl:"<code>public float division(...) throws X { ... throw new X(...); }</code>"},
+{ id:"3-1-b", tp:3, lvl:1, type:"qcm",
+  q:"Ta <code>DivisionParZeroException</code> hérite de <code>ArithmeticException</code>. Conséquence ?",
+  options:["C'est une exception <b>non vérifiée</b> (RuntimeException) : pas obligé de la déclarer avec throws ni de l'attraper","Elle doit obligatoirement être déclarée avec throws","Elle ne peut pas être attrapée par un catch","Elle arrête toujours le programme"],
+  answer:0, expl:"ArithmeticException hérite de RuntimeException. Les exceptions qui héritent directement de <code>Exception</code> (comme LoginInvalideException) sont <b>vérifiées</b> : le compilateur oblige à les déclarer ou les attraper."},
+{ id:"3-1-c", tp:3, lvl:1, type:"qcm",
+  q:"Quand le bloc <code>finally</code> est-il exécuté ?",
+  options:["Toujours : qu'il y ait une exception ou non, et même après un <code>return</code> dans le try/catch","Seulement si une exception a été levée","Seulement si aucune exception n'a été levée","Seulement si le catch relance une exception"],
+  answer:0, expl:"C'est pour ça qu'on y met <code>scanner.close()</code> dans MainPersonne. Le try-with-resources fait la même chose automatiquement."},
+{ id:"3-1-d", tp:3, lvl:1, type:"qcm",
+  q:"<code>catch (Exception e) {...} catch (LoginInvalideException e) {...}</code> — que se passe-t-il ?",
+  options:["Erreur de compilation : le 2ᵉ catch est inatteignable, il faut mettre les exceptions les plus spécifiques en premier","Ça fonctionne, Java choisit le catch le plus précis","Le second catch est toujours exécuté après le premier","Erreur seulement à l'exécution"],
+  answer:0, expl:"Les catch sont testés dans l'ordre. Exception attrape tout, donc LoginInvalideException ne serait jamais atteinte : le compilateur refuse."},
+{ id:"3-1-e", tp:3, lvl:1, type:"qcm",
+  q:"Un <code>TreeSet&lt;Employee&gt;</code> trié uniquement par salaire reçoit deux employés différents au <b>même salaire</b>. Que se passe-t-il ?",
+  options:["Le second n'est pas ajouté : pour un TreeSet, compare() == 0 signifie « même élément »","Les deux sont ajoutés, dans l'ordre d'insertion","Une exception est levée","Le second remplace le premier"],
+  answer:0, expl:"C'est pour ça que ton SalaireComparator compare ensuite le nom puis le prénom quand les salaires sont égaux."},
+{ id:"3-1-f", tp:3, lvl:1, type:"qcm",
+  q:"Que vérifie <code>login.matches(\"^[a-zA-Z]+$\")</code> ?",
+  options:["Que le login contient une ou plusieurs lettres, et rien d'autre","Que le login commence par une lettre","Que le login contient au moins une lettre","Que le login fait entre 8 et 16 caractères"],
+  answer:0, expl:"<code>[a-zA-Z]</code> = une lettre, <code>+</code> = au moins une fois, <code>^…$</code> = toute la chaîne (matches() l'impose déjà). Avec <code>*</code> au lieu de <code>+</code>, un login vide passerait. Attention : les lettres accentuées sont refusées."},
+{ id:"3-1-g", tp:3, lvl:1, type:"qcm",
+  q:"Pourquoi fournir un <code>Comparator</code> dans une <b>classe séparée</b> plutôt que dans Employee ?",
+  options:["On peut créer plusieurs critères de tri (salaire, nom…) sans modifier Employee, et choisir celui qu'on donne au TreeSet","C'est obligatoire, une classe ne peut pas se comparer elle-même","Pour que le tri soit plus rapide","Parce que TreeSet ne fonctionne pas avec Comparable"],
+  answer:0, expl:"L'alternative est <code>implements Comparable&lt;Employee&gt;</code> (un seul ordre « naturel »). Le Comparator externe permet plusieurs ordres."},
+
+{ id:"3-2-a", tp:3, lvl:2, type:"qcm",
+  q:"Qu'affiche <code>System.out.println(\" \" + f(0));</code> ?",
+  code:R`static int f(int d) {
+    try {
+        System.out.print("A");
+        int r = 10 / d;
+        System.out.print("B");
+        return r;
+    } catch (ArithmeticException e) {
+        System.out.print("C");
+        return -1;
+    } finally {
+        System.out.print("D");
+    }
+}`,
+  options:["ACD -1","AC -1","ABD 0","ACD puis plantage"], answer:0,
+  expl:"10/0 lève ArithmeticException → B est sauté, on passe dans le catch (C), le finally s'exécute avant le retour (D), puis println affiche \" -1\"."},
+{ id:"3-2-b", tp:3, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`class ParSalaire implements Comparator<Employee> {
+    public int compare(Employee a, Employee b) {
+        return Double.compare(a.getSalaire(), b.getSalaire());
+    }
+}
+// main
+Set<Employee> set = new TreeSet<>(new ParSalaire());
+set.add(new Employee("Martin", "Paul", 2500));
+set.add(new Employee("Durand", "Léa", 3000));
+set.add(new Employee("Petit", "Jean", 2500));
+System.out.println(set.size());`,
+  options:["2","3","1","Exception"], answer:0,
+  expl:"Jean et Paul ont le même salaire → compare() renvoie 0 → le TreeSet considère que c'est le même élément et ignore Jean."},
+{ id:"3-2-c", tp:3, lvl:2, type:"qcm",
+  q:"Avec ta classe Polynome, que vaut <code>p.calculerValeur(2)</code> ?",
+  code:R`Polynome p = new Polynome(
+    new Monome(3, 2),
+    new Monome(5, 1),
+    new Monome(-2, 0));
+System.out.println(p.calculerValeur(2));`,
+  options:["20.0","16.0","24.0","18.0"], answer:0,
+  expl:"3·2² + 5·2 − 2 = 12 + 10 − 2 = 20. Chaque monôme calcule <code>coefficient * Math.pow(x, degre)</code>."},
+{ id:"3-2-d", tp:3, lvl:2, type:"qcm",
+  q:"Qu'affiche <code>p.multiplier(q)</code> avec P(x) = 2x + 3 et Q(x) = x + 4 ?",
+  code:R`Polynome p = new Polynome(new Monome(2, 1), new Monome(3, 0));
+Polynome q = new Polynome(new Monome(1, 1), new Monome(4, 0));
+System.out.println(p.multiplier(q));`,
+  options:["2x^2 + 11x + 12","2x^2 + 8x + 3x + 12","2x^2 + 12","3x + 7"], answer:0,
+  expl:"Les 4 produits de monômes : 2x², 8x, 3x, 12. <code>ajouterMonome</code> regroupe ceux de même degré (8x + 3x = 11x) et le DegreComparator trie par degré décroissant."},
+{ id:"3-2-e", tp:3, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code (Personne du TP3) ?",
+  code:R`try {
+    Personne p = new Personne("", "Léa", 200);
+    System.out.println("Créée : " + p);
+} catch (NomPrenomVideException | AgeInvalideException e) {
+    System.out.println("Erreur : " + e.getMessage());
+}`,
+  options:["Erreur : Le nom ne doit pas etre vide.","Erreur : L'age doit etre compris entre 0 et 130 ans (recu : 200).","Les deux messages d'erreur","Créée : Léa (200 ans)"],
+  answer:0, expl:"Le constructeur teste le nom en premier : la première exception levée interrompt tout, l'âge n'est jamais vérifié."},
+{ id:"3-2-f", tp:3, lvl:2, type:"qcm",
+  q:"Dans ton MainPersonne, que se passe-t-il à la 10ᵉ erreur de saisie consécutive ?",
+  code:R`} catch (NomPrenomVideException | AgeInvalideException e) {
+    erreurs++;
+    System.out.println("Erreur de saisie : " + e.getMessage());
+    if (erreurs >= MAX_ERREURS) {
+        throw new MaxTentativesException("Nombre maximal ... depasse.");
+    }
+    System.out.println("Tentative " + erreurs + "/" + MAX_ERREURS + ". Veuillez recommencer.");
+}`,
+  options:["MaxTentativesException sort de saisirPersonne, est attrapée dans le main qui affiche « Arret du programme », puis le finally ferme le Scanner","La boucle recommence une 11ᵉ fois","Le programme plante avec une stack trace","Le compteur est remis à 0"],
+  answer:0, expl:"Lever une exception dans un catch la propage à l'appelant (la boucle <code>while(true)</code> est quittée)."},
+
+{ id:"3-3-a", tp:3, lvl:3, type:"review",
+  q:"Vérification de connexion. Trouve les <b>4 problèmes</b>.",
+  code:R`public static void verifier(String login, String mdp)
+        throws LoginInvalideException, MotDePasseInvalideException {
+    if (!login.matches("[a-zA-Z]*")) {
+        throw new LoginInvalideException("Login invalide");
+    }
+    if (mdp.length() < 8 && mdp.length() > 16) {
+        new MotDePasseInvalideException("Mot de passe invalide");
+    }
+}
+
+public static void main(String[] args) {
+    try {
+        verifier("Dupont", "abc");
+        System.out.println("Connexion OK");
+    } catch (Exception e) {
+        System.out.println("Erreur inconnue");
+    }
+}`,
+  bugs:[
+    {lines:[3], label:"* accepte un login vide", expl:"<code>*</code> = zéro ou plus : <code>\"\"</code> est accepté. Il faut <code>+</code>."},
+    {lines:[6], label:"&& au lieu de ||", expl:"Une longueur ne peut pas être à la fois &lt; 8 et &gt; 16 : la condition est toujours fausse. Il faut <code>||</code>."},
+    {lines:[7], label:"Exception créée mais jamais lancée", expl:"Il manque <code>throw</code> : l'objet exception est créé puis jeté à la poubelle."},
+    {lines:[15,16], label:"catch générique, message inutile", expl:"Attraper <code>Exception</code> masque le type d'erreur et le message n'aide pas l'utilisateur. Il faut un catch par exception avec <code>e.getMessage()</code>."}
+  ]},
+{ id:"3-3-b", tp:3, lvl:3, type:"review",
+  q:"Comparator et Polynome. Trouve les <b>3 problèmes</b>.",
+  code:R`public class SalaireComparator implements Comparator<Employee> {
+    @Override
+    public int compare(Employee e1, Employee e2) {
+        return (int) (e1.getSalaire() - e2.getSalaire());
+    }
+}
+
+public class Polynome {
+    private List<Monome> monomes = new ArrayList<>();
+
+    public void ajouterMonome(Monome m) {
+        Monome existant = trouverMonome(m.getDegre());
+        if (existant != null) {
+            existant.setCoefficient(existant.getCoefficient() + m.getCoefficient());
+        } else {
+            monomes.add(m);
+        }
+    }
+}`,
+  bugs:[
+    {lines:[4], label:"Cast en int de la différence", expl:"2500.5 − 2500.2 = 0.3 → <code>(int)</code> donne 0 : le TreeSet croit que c'est le même employé et le perd. Utiliser <code>Double.compare(...)</code> (et départager par nom/prénom)."},
+    {lines:[16], label:"On stocke la référence (aliasing)", expl:"Le monôme de l'appelant est stocké tel quel. Plus tard, <code>setCoefficient</code> sur ce monôme modifie aussi le polynôme d'origine (ex : dans additionner). Il faut stocker une copie : <code>new Monome(m.getCoefficient(), m.getDegre())</code>."},
+    {lines:[14], label:"Coefficient nul jamais retiré", expl:"3x² + (−3x²) laisse un monôme « 0x² » dans la liste. Ta version retire le monôme quand le nouveau coefficient vaut 0."}
+  ]},
+
+{ id:"3-4-a", tp:3, lvl:4, type:"fill",
+  q:"Division avec exception personnalisée.",
+  code:R`public float division(int dividende, int diviseur) {
+    if (diviseur == 0) {
+        [[0]] new DivisionParZeroException(diviseur);
+    }
+    return [[1]] dividende / diviseur;
+}
+
+// programme appelant
+try {
+    float r = calc.division(10, 0);
+} [[2]] (DivisionParZeroException e) {
+    System.out.println(e.getMessage() + " (diviseur : " + e.[[3]]() + ")");
+}`,
+  answers:[["throw"],["(float)"],["catch"],["getDiviseur"]],
+  expl:"Sans le cast <code>(float)</code>, 7/2 donnerait 3.0 (division entière)."},
+{ id:"3-4-b", tp:3, lvl:4, type:"fill",
+  q:"Comparator pour le TreeSet d'employés (salaire croissant, puis nom).",
+  code:R`public class SalaireComparator [[0]] Comparator<Employee> {
+    @Override
+    public int compare(Employee e1, Employee e2) {
+        int c = [[1]](e1.getSalaire(), e2.getSalaire());
+        if (c != 0) return c;
+        return e1.getNom().[[2]](e2.getNom());
+    }
+}
+
+Set<Employee> employes = new TreeSet<>([[3]]);`,
+  answers:[["implements"],["Double.compare"],["compareTo","compareToIgnoreCase"],["new SalaireComparator()"]],
+  expl:"Le TreeSet appelle <code>compare</code> à chaque insertion pour placer l'élément."},
+{ id:"3-4-c", tp:3, lvl:4, type:"fill",
+  q:"Saisie d'une personne avec 10 tentatives maximum.",
+  code:R`int erreurs = 0;
+while (true) {
+    try {
+        // ... lecture de nom, prenom, age ...
+        return new Personne(nom, prenom, age);
+    } catch (NomPrenomVideException | AgeInvalideException e) {
+        [[0]];
+        System.out.println("Erreur : " + e.getMessage());
+        if (erreurs >= 10) {
+            [[1]] new MaxTentativesException("Trop d'erreurs");
+        }
+    }
+}`,
+  answers:[["erreurs++","++erreurs","erreurs += 1","erreurs = erreurs + 1"],["throw"]],
+  expl:"Le <code>return</code> dans le try sort de la méthode dès qu'une personne valide est créée."},
+{ id:"3-4-d", tp:3, lvl:4, type:"fill",
+  q:"Multiplication de deux polynômes à partir des monômes.",
+  code:R`public Polynome multiplier(Polynome autre) {
+    Polynome resultat = new Polynome();
+    for (Monome m1 : this.monomes) {
+        for (Monome m2 : [[0]]) {
+            resultat.ajouterMonome(m1.[[1]](m2));
+        }
+    }
+    return resultat;
+}
+
+// Dans Monome
+public Monome multiplier(Monome autre) {
+    return new Monome(this.coefficient * autre.coefficient, [[2]]);
+}`,
+  answers:[["autre.getMonomes()","autre.monomes"],["multiplier"],["this.degre + autre.degre","degre + autre.degre","autre.degre + this.degre","autre.degre + degre"]],
+  expl:"a·xⁿ × b·xᵐ = (a·b)·xⁿ⁺ᵐ : on multiplie les coefficients et on <b>additionne</b> les degrés."},
+
+/* =========================== TP4 =========================== */
+{ id:"4-1-a", tp:4, lvl:1, type:"qcm",
+  q:"Quelle fenêtre Swing utiliser pour la fenêtre <b>principale</b> d'une application ?",
+  options:["JFrame","JWindow","JDialog","JPanel"], answer:0,
+  expl:"JFrame : barre de titre, menu, boutons fermer/agrandir. JDialog : boîte de dialogue (peut être modale). JWindow : fenêtre nue (splash screen). JPanel n'est pas une fenêtre mais un conteneur."},
+{ id:"4-1-b", tp:4, lvl:1, type:"qcm",
+  q:"Pourquoi lancer l'interface avec <code>SwingUtilities.invokeLater(...)</code> ?",
+  options:["Pour créer et manipuler l'IHM dans le thread dédié de Swing (Event Dispatch Thread)","Pour que la fenêtre s'ouvre plus tard, après un délai","Pour que le programme se ferme à la fin du main","C'est obligatoire uniquement pour JWindow"],
+  answer:0, expl:"Swing n'est pas thread-safe : tout ce qui touche aux composants doit passer par l'EDT. <code>EventQueue.invokeLater</code> (TP6) fait la même chose."},
+{ id:"4-1-c", tp:4, lvl:1, type:"qcm",
+  q:"Quel layout pour les boutons d'une calculatrice, tous de la même taille en lignes/colonnes ?",
+  options:["GridLayout","FlowLayout","BorderLayout","Positionnement absolu (null)"], answer:0,
+  expl:"<code>new GridLayout(5, 4, 6, 6)</code> : 5 lignes, 4 colonnes, 6 px d'espacement. Tous les composants ont la même taille."},
+{ id:"4-1-d", tp:4, lvl:1, type:"qcm",
+  q:"Quel est le layout par défaut d'un <code>JPanel</code> ?",
+  options:["FlowLayout","BorderLayout","GridLayout","Aucun"], answer:0,
+  expl:"FlowLayout aligne les composants sur une ligne et passe à la ligne suivante si besoin. (Le contentPane d'une JFrame, lui, est en BorderLayout par défaut.)"},
+{ id:"4-1-e", tp:4, lvl:1, type:"qcm",
+  q:"Quelles sont les zones d'un <code>BorderLayout</code> ?",
+  options:["NORTH, SOUTH, EAST, WEST, CENTER","TOP, BOTTOM, LEFT, RIGHT","Une grille de 3×3","LINE_1 à LINE_5"], answer:0,
+  expl:"Ta calculatrice met l'écran en NORTH et le clavier en CENTER (qui prend toute la place restante)."},
+{ id:"4-1-f", tp:4, lvl:1, type:"qcm",
+  q:"Quel est l'intérêt de <code>AbstractAction</code> (ex : EffacerAction) par rapport à un gros <code>actionPerformed</code> dans la fenêtre ?",
+  options:["Une classe par action, réutilisable : la même action sert au bouton « C » et au menu « Effacer tout »","AbstractAction est plus rapide à l'exécution","Elle évite d'avoir besoin d'un écouteur","Elle permet d'éviter invokeLater"],
+  answer:0, expl:"L'action porte son texte (via <code>super(texte)</code>) et son comportement. <code>new JButton(action)</code> et <code>new JMenuItem(action)</code> l'utilisent directement."},
+{ id:"4-1-g", tp:4, lvl:1, type:"qcm",
+  q:"Dans <code>actionPerformed(ActionEvent e)</code>, que renvoie <code>e.getSource()</code> ?",
+  options:["Le composant qui a déclenché l'événement (ex : le JButton cliqué)","Le texte du bouton","La fenêtre principale","Le nom de la classe écouteur"],
+  answer:0, expl:"On le compare avec <code>==</code> aux références des boutons : <code>if (e.getSource() == butt1)</code>."},
+
+{ id:"4-2-a", tp:4, lvl:2, type:"qcm",
+  q:"Avec ton MoteurCalcul, qu'affiche l'écran à la fin ?",
+  code:R`MoteurCalcul m = new MoteurCalcul();
+m.chiffre('1');
+m.chiffre('2');
+m.operateur('+');
+m.chiffre('3');
+m.egal();
+System.out.println(m.getAffichage());`,
+  options:["15","123","3","12+3"], answer:0,
+  expl:"12 est stocké dans l'accumulateur quand on tape +, puis 3 est saisi, egal() calcule 12 + 3 et <code>formater</code> affiche \"15\" (sans .0)."},
+{ id:"4-2-b", tp:4, lvl:2, type:"qcm",
+  q:"Calcul enchaîné : qu'affiche l'écran juste après <code>operateur('-')</code> ?",
+  code:R`m.chiffre('8');
+m.operateur('*');
+m.chiffre('2');
+m.operateur('-');
+System.out.println(m.getAffichage());`,
+  options:["16","2","8","-"], answer:0,
+  expl:"Un opérateur est déjà en attente (*) et une saisie vient d'être faite → <code>operateur()</code> calcule 8 × 2 = 16 et l'affiche avant d'enregistrer le −."},
+{ id:"4-2-c", tp:4, lvl:2, type:"qcm",
+  q:"Que renvoient <code>formater(5.0)</code> et <code>formater(2.5)</code> ?",
+  code:R`public static String formater(double valeur) {
+    if (valeur == Math.rint(valeur) && Math.abs(valeur) < 1e15) {
+        return String.valueOf((long) valeur);
+    }
+    return String.valueOf(valeur);
+}`,
+  options:["\"5\" et \"2.5\"","\"5.0\" et \"2.5\"","\"5\" et \"2\"","\"5\" et \"3\""], answer:0,
+  expl:"<code>Math.rint</code> arrondit à l'entier le plus proche : 5.0 est entier → converti en long → \"5\". 2.5 ≠ 2.0 → affiché tel quel."},
+{ id:"4-2-d", tp:4, lvl:2, type:"qcm",
+  q:"L'utilisateur tape 9 ÷ 0 = . Que se passe-t-il ?",
+  code:R`// EgalAction
+public void actionPerformed(ActionEvent e) {
+    try {
+        fenetre.getMoteur().egal();
+        fenetre.rafraichir();
+    } catch (DivisionParZeroException ex) {
+        fenetre.afficherErreur(ex);   // JOptionPane + moteur.effacer() + rafraichir()
+    }
+}`,
+  options:["calculer() lève DivisionParZeroException, une boîte d'erreur s'affiche puis la calculatrice est remise à 0","L'écran affiche Infinity","Le programme plante","L'écran affiche NaN"],
+  answer:0, expl:"En double, 9.0/0 donnerait Infinity sans erreur : c'est pour ça que <code>calculer</code> teste <code>b == 0</code> et lève l'exception lui-même."},
+
+{ id:"4-3-a", tp:4, lvl:3, type:"review",
+  q:"Fenêtre Swing avec deux boutons. Trouve les <b>4 problèmes</b>.",
+  code:R`public class Fenetre extends JFrame implements ActionListener {
+    private JButton valider, annuler;
+    private JLabel message;
+
+    public Fenetre() {
+        setTitle("Test");
+        setSize(300, 150);
+        JPanel panel = new JPanel();
+        valider = new JButton("Valider");
+        panel.add(valider);
+        annuler = new JButton("Annuler");
+        annuler.addActionListener(this);
+        panel.add(annuler);
+        message = new JLabel("...");
+        panel.add(message);
+        setContentPane(panel);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals("Valider")) message.setText("OK");
+        else message.setText("Annulé");
+    }
+
+    public static void main(String[] args) {
+        Fenetre f = new Fenetre();
+        f.setVisible(true);
+    }
+}`,
+  bugs:[
+    {lines:[9,10], label:"Bouton Valider sans écouteur", expl:"Il manque <code>valider.addActionListener(this);</code> : cliquer sur Valider ne fait rien."},
+    {lines:[20], label:"getSource() comparé à une String", expl:"<code>getSource()</code> renvoie le JButton, jamais égal à la chaîne \"Valider\" : on passe toujours dans le else. Écrire <code>e.getSource() == valider</code>."},
+    {lines:[25,26], label:"IHM créée hors de l'EDT", expl:"Il faut <code>SwingUtilities.invokeLater(() -> new Fenetre().setVisible(true));</code>."},
+    {lines:[5,6,7], label:"Pas de setDefaultCloseOperation", expl:"Par défaut la croix cache seulement la fenêtre (HIDE_ON_CLOSE) : le programme continue de tourner. Ajouter <code>setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</code>."}
+  ]},
+
+{ id:"4-4-a", tp:4, lvl:4, type:"fill",
+  q:"Fenêtre de base du TP4.",
+  code:R`public class SimpleWindow [[0]] JFrame {
+    public SimpleWindow() {
+        super();
+        build();
+    }
+    private void build() {
+        setTitle("Ma fenêtre");
+        setSize(500, 500);
+        setLocationRelativeTo([[1]]);          // centre la fenêtre à l'écran
+        setDefaultCloseOperation(JFrame.[[2]]);
+        setContentPane(buildContentPane());
+    }
+    private JPanel buildContentPane() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new [[3]]());          // composants à la suite, ligne par ligne
+        panel.add(new JLabel("Hello World !"));
+        return panel;
+    }
+    public static void main(String[] args) {
+        SwingUtilities.[[4]](new Runnable() {
+            public void run() {
+                SimpleWindow w = new SimpleWindow();
+                w.[[5]](true);
+            }
+        });
+    }
+}`,
+  answers:[["extends"],["null"],["EXIT_ON_CLOSE"],["FlowLayout"],["invokeLater"],["setVisible"]],
+  expl:"Sans <code>setVisible(true)</code>, la fenêtre existe en mémoire mais ne s'affiche pas."},
+{ id:"4-4-b", tp:4, lvl:4, type:"fill",
+  q:"Action d'un bouton chiffre de la calculatrice.",
+  code:R`public class ChiffreAction extends [[0]] {
+    private Calculatrice fenetre;
+    private char chiffre;
+
+    public ChiffreAction(Calculatrice fenetre, char chiffre) {
+        [[1]](String.valueOf(chiffre));   // texte affiché sur le bouton
+        this.fenetre = fenetre;
+        this.chiffre = chiffre;
+    }
+
+    @Override
+    public void [[2]](ActionEvent e) {
+        fenetre.getMoteur().chiffre(chiffre);
+        fenetre.rafraichir();
+    }
+}
+
+// dans Calculatrice.buildClavier()
+JPanel clavier = new JPanel(new [[3]](5, 4, 6, 6));
+clavier.add(new JButton(new ChiffreAction(this, '7')));`,
+  answers:[["AbstractAction"],["super"],["actionPerformed"],["GridLayout"]],
+  expl:"L'action garde une référence vers la fenêtre pour accéder au moteur et rafraîchir l'écran (séparation vue / moteur de calcul)."},
+{ id:"4-4-c", tp:4, lvl:4, type:"fill",
+  q:"Cœur du moteur de calcul.",
+  code:R`public static double calculer(double a, char op, double b) throws DivisionParZeroException {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/':
+            if ([[0]]) {
+                throw new DivisionParZeroException(a);
+            }
+            return a / b;
+        [[1]]:
+            throw new IllegalArgumentException("Opérateur inconnu : " + op);
+    }
+}`,
+  answers:[["b == 0","b == 0.0","0 == b"],["default"]],
+  expl:"Chaque <code>case</code> fait un <code>return</code>, donc pas besoin de <code>break</code>."},
+
+/* =========================== TP5 =========================== */
+{ id:"5-1-a", tp:5, lvl:1, type:"qcm",
+  q:"Que fait <code>File f = new File(\"notes.txt\");</code> ?",
+  options:["Crée seulement un objet qui représente un chemin ; rien n'est créé sur le disque","Crée le fichier vide sur le disque","Ouvre le fichier en lecture","Lève une exception si le fichier n'existe pas"],
+  answer:0, expl:"Pour créer le fichier physique : <code>f.createNewFile()</code>, qui peut lever une IOException."},
+{ id:"5-1-b", tp:5, lvl:1, type:"qcm",
+  q:"Que renvoie <code>createNewFile()</code> si le fichier existe déjà ?",
+  options:["false (et le fichier n'est pas modifié)","true","Il lève FileAlreadyExistsException","Il vide le fichier et renvoie true"], answer:0,
+  expl:"true = le fichier vient d'être créé ; false = il existait déjà."},
+{ id:"5-1-c", tp:5, lvl:1, type:"qcm",
+  q:"Différence entre <code>new FileWriter(f)</code> et <code>new FileWriter(f, true)</code> ?",
+  options:["Le premier écrase le contenu, le second écrit à la fin (mode ajout / append)","Le second crée le fichier, pas le premier","Le second écrit en binaire","Aucune différence"], answer:0,
+  expl:"C'est la différence entre tes méthodes <code>ecrire()</code> (réécrit tout) et <code>ajouter()</code> (append)."},
+{ id:"5-1-d", tp:5, lvl:1, type:"qcm",
+  q:"Que garantit un <b>try-with-resources</b> : <code>try (FileWriter w = new FileWriter(f)) { ... }</code> ?",
+  options:["La ressource est fermée automatiquement (close) à la fin du bloc, même si une exception est levée","Les exceptions sont ignorées","Le fichier est créé s'il n'existe pas, sinon rien","L'écriture est plus rapide"], answer:0,
+  expl:"La ressource doit implémenter <code>AutoCloseable</code>. Si on oublie <code>close()</code>, les données en tampon peuvent ne jamais être écrites."},
+{ id:"5-1-e", tp:5, lvl:1, type:"qcm",
+  q:"<code>new Scanner(fichier)</code> peut lever <code>FileNotFoundException</code>, qui est une exception <b>vérifiée</b>. Il faut donc :",
+  options:["L'attraper avec try/catch ou la déclarer avec throws dans la méthode","Rien, Java la gère tout seul","Utiliser obligatoirement System.in","La déclarer avec throw"], answer:0,
+  expl:"Ta méthode <code>lire()</code> la propage avec <code>throws FileNotFoundException</code> et laisse l'appelant décider."},
+{ id:"5-1-f", tp:5, lvl:1, type:"qcm",
+  q:"Comment ajouter une note à un étudiant dont la ligne est au milieu du fichier texte ?",
+  options:["Tout relire en mémoire, modifier l'objet Etudiant, puis réécrire tout le fichier","Se positionner sur la ligne et la modifier sur place avec FileWriter","Utiliser FileWriter en mode append","Supprimer le fichier et n'écrire que cet étudiant"], answer:0,
+  expl:"Un fichier texte n'est qu'une suite de caractères : insérer au milieu décalerait tout. D'où <code>lire()</code> → <code>chercher()</code> → <code>ajouterNote()</code> → <code>ecrire()</code>."},
+{ id:"5-1-g", tp:5, lvl:1, type:"qcm",
+  q:"Pourquoi <code>ArrayList&lt;Double&gt;</code> et pas <code>ArrayList&lt;double&gt;</code> ?",
+  options:["Les génériques ne contiennent que des objets : on utilise la classe enveloppe Double (autoboxing double ↔ Double)","double n'existe pas en Java","Double est plus précis que double","C'est une convention, les deux compilent"], answer:0,
+  expl:"<code>notes.add(12.5)</code> convertit automatiquement le double en Double (autoboxing)."},
+{ id:"5-1-h", tp:5, lvl:1, type:"qcm",
+  q:"Avec un JFileChooser, comment savoir si l'utilisateur a validé un fichier ?",
+  options:["<code>chooser.showOpenDialog(fenetre) == JFileChooser.APPROVE_OPTION</code>, puis <code>getSelectedFile()</code>","<code>chooser.getSelectedFile() != null</code> suffit toujours","<code>chooser.isApproved()</code>","Il faut lire System.in"], answer:0,
+  expl:"<code>showOpenDialog</code> est modal : il bloque jusqu'à ce que l'utilisateur valide ou annule (CANCEL_OPTION)."},
+
+{ id:"5-2-a", tp:5, lvl:2, type:"qcm",
+  q:"Que vaut <code>e.moyenne()</code> ?",
+  code:R`Etudiant e = Etudiant.depuisLigne("Dupont;Marie;12;14;16");
+System.out.println(e.moyenne());`,
+  options:["14.0","42.0","13.0","Erreur : 12 n'est pas un double"], answer:0,
+  expl:"split(\";\") → [Dupont, Marie, 12, 14, 16]. Les notes commencent à l'indice 2 et <code>Double.parseDouble(\"12\")</code> fonctionne. (12+14+16)/3 = 14."},
+{ id:"5-2-b", tp:5, lvl:2, type:"qcm",
+  q:"Que renvoie <code>versLigne()</code> ?",
+  code:R`Etudiant e = new Etudiant("Dupont", "Marie");
+e.ajouterNote(12.5);
+e.ajouterNote(14);
+System.out.println(e.versLigne());`,
+  options:["Dupont;Marie;12.5;14.0","Dupont;Marie;12.5;14","Marie Dupont [12.5, 14.0]","Dupont;Marie;26.5"], answer:0,
+  expl:"14 (int) est converti en double 14.0 à l'appel de <code>ajouterNote(double)</code>, et un double s'écrit toujours avec sa partie décimale."},
+{ id:"5-2-c", tp:5, lvl:2, type:"qcm",
+  q:"Le fichier contient les 4 lignes ci-dessous. Combien d'étudiants <code>lire()</code> renvoie-t-elle ?",
+  code:R`Dupont;Marie;12;14
+
+Martin;Paul;abc
+Durand;Léa`,
+  options:["2","3","4","0 : l'exception arrête la lecture"], answer:0,
+  expl:"Ligne vide → <code>continue</code>. \"abc\" → NumberFormatException (sous-classe d'IllegalArgumentException) attrapée : ligne ignorée avec un message. \"Durand;Léa\" a 2 champs : étudiant valide sans note."},
+{ id:"5-2-d", tp:5, lvl:2, type:"qcm",
+  q:"Que vaut <code>\"Dupont;Marie;\".split(\";\").length</code> ?",
+  options:["2","3","1","Exception"], answer:0,
+  expl:"<code>split</code> supprime les chaînes vides <b>en fin</b> de tableau. (Avec <code>split(\";\", -1)</code> on obtiendrait 3.)"},
+{ id:"5-2-e", tp:5, lvl:2, type:"qcm",
+  q:"Combien d'étudiants contient le fichier à la fin ?",
+  code:R`FichierNotes f = new FichierNotes("notes.txt");
+f.ecrire(List.of(new Etudiant("A", "B"), new Etudiant("C", "D")));
+f.ecrire(List.of(new Etudiant("E", "F")));
+f.ajouter(new Etudiant("G", "H"));
+System.out.println(f.lire().size());`,
+  options:["2","4","3","1"], answer:0,
+  expl:"Le 2ᵉ <code>ecrire</code> écrase le fichier (il ne reste que E F), puis <code>ajouter</code> ajoute G H à la fin → 2."},
+
+{ id:"5-3-a", tp:5, lvl:3, type:"review",
+  q:"Méthodes d'écriture/lecture du fichier de notes. Trouve les <b>4 problèmes</b>.",
+  code:R`public void ajouter(Etudiant e) {
+    try {
+        FileWriter w = new FileWriter(fichier);
+        w.write(e.versLigne());
+    } catch (IOException ex) {
+    }
+}
+
+public List<Etudiant> lire() throws FileNotFoundException {
+    List<Etudiant> res = new ArrayList<>();
+    Scanner sc = new Scanner(fichier);
+    while (sc.hasNextLine()) {
+        res.add(Etudiant.depuisLigne(sc.nextLine()));
+    }
+    return res;
+}`,
+  bugs:[
+    {lines:[3], label:"FileWriter : écrase le fichier et n'est jamais fermé", expl:"« Ajouter » doit ouvrir en mode append : <code>new FileWriter(fichier, true)</code>. Et sans <code>close()</code> le texte peut rester dans le tampon : utiliser <code>try (FileWriter w = new FileWriter(fichier, true)) { ... }</code>."},
+    {lines:[4], label:"Pas de retour à la ligne", expl:"Sans <code>System.lineSeparator()</code> (ou \"\\n\"), les étudiants seraient collés sur la même ligne."},
+    {lines:[5,6], label:"catch vide", expl:"L'erreur est avalée en silence : impossible de savoir que l'écriture a échoué. Afficher un message ou propager avec <code>throws IOException</code>."},
+    {lines:[11,13], label:"Lecture fragile", expl:"Une ligne vide ou mal formée lève une exception et fait échouer toute la lecture, et le Scanner n'est jamais fermé. Ignorer les lignes vides, attraper l'erreur par ligne, utiliser try-with-resources."}
+  ]},
+
+{ id:"5-4-a", tp:5, lvl:4, type:"fill",
+  q:"Lecture du fichier de notes.",
+  code:R`public ArrayList<Etudiant> lire() throws [[0]] {
+    ArrayList<Etudiant> etudiants = new ArrayList<>();
+    try (Scanner scanner = new Scanner([[1]])) {
+        while (scanner.[[2]]()) {
+            String ligne = scanner.nextLine();
+            if (ligne.isBlank()) [[3]];
+            etudiants.add(Etudiant.depuisLigne(ligne));
+        }
+    }
+    return etudiants;
+}`,
+  answers:[["FileNotFoundException","IOException"],["fichier","this.fichier"],["hasNextLine"],["continue"]],
+  expl:"<code>continue</code> passe directement au tour de boucle suivant."},
+{ id:"5-4-b", tp:5, lvl:4, type:"fill",
+  q:"Ajout en fin de fichier + reconstruction d'un étudiant depuis une ligne.",
+  code:R`public void ajouter(Etudiant e) throws IOException {
+    try (FileWriter writer = new FileWriter(fichier, [[0]])) {
+        writer.[[1]](e.versLigne() + System.lineSeparator());
+    }
+}
+
+public static Etudiant depuisLigne(String ligne) {
+    String[] champs = ligne.[[2]](";");
+    Etudiant e = new Etudiant(champs[0].trim(), champs[1].trim());
+    for (int i = [[3]]; i < champs.length; i++) {
+        e.ajouterNote(Double.[[4]](champs[i].trim()));
+    }
+    return e;
+}`,
+  answers:[["true"],["write"],["split"],["2"],["parseDouble","valueOf"]],
+  expl:"Indices 0 et 1 = nom et prénom, les notes commencent à 2."},
+{ id:"5-4-c", tp:5, lvl:4, type:"fill",
+  q:"Ajouter une note à un étudiant existant dans le fichier.",
+  code:R`public boolean ajouterNote(String nom, String prenom, double note) throws IOException {
+    ArrayList<Etudiant> etudiants = [[0]];
+    Etudiant e = chercher(etudiants, nom, prenom);
+    if (e == null) return false;
+    e.ajouterNote(note);
+    [[1]];
+    return true;
+}`,
+  answers:[["lire()","this.lire()"],["ecrire(etudiants)","this.ecrire(etudiants)"]],
+  expl:"Lire tout → modifier en mémoire → réécrire tout."},
+
+/* =========================== TP6 =========================== */
+{ id:"6-1-a", tp:6, lvl:1, type:"qcm",
+  q:"Quelle méthode redéfinir dans un JPanel pour dessiner dedans ?",
+  options:["<code>paintComponent(Graphics g)</code>","<code>draw()</code>","<code>repaint()</code>","<code>actionPerformed(ActionEvent e)</code>"], answer:0,
+  expl:"Swing appelle <code>paintComponent</code> chaque fois que le panneau doit être redessiné (ouverture, redimensionnement, repaint…)."},
+{ id:"6-1-b", tp:6, lvl:1, type:"qcm",
+  q:"Pourquoi appeler <code>super.paintComponent(g)</code> en premier ?",
+  options:["Pour peindre le fond et effacer l'ancien dessin ; sinon il reste des traces","Pour afficher la fenêtre","Pour charger les images","C'est facultatif, ça ne change rien"], answer:0,
+  expl:"La version de JPanel remplit le fond avec la couleur de fond. Sans cet appel, on dessine par-dessus l'état précédent."},
+{ id:"6-1-c", tp:6, lvl:1, type:"qcm",
+  q:"L'image a changé (setImage). Comment demander un nouvel affichage ?",
+  options:["Appeler <code>repaint()</code>","Appeler <code>paintComponent(getGraphics())</code>","Appeler <code>setVisible(true)</code>","Recréer la fenêtre"], answer:0,
+  expl:"<code>repaint()</code> programme un rafraîchissement dans l'EDT. On n'appelle jamais paintComponent soi-même."},
+{ id:"6-1-d", tp:6, lvl:1, type:"qcm",
+  q:"Où est l'origine (0, 0) du repère de dessin ?",
+  options:["En haut à gauche, x vers la droite, y vers le bas","En bas à gauche, y vers le haut","Au centre du panneau","En haut à droite"], answer:0,
+  expl:"Plus y est grand, plus on descend."},
+{ id:"6-1-e", tp:6, lvl:1, type:"qcm",
+  q:"Pourquoi caster <code>Graphics g</code> en <code>Graphics2D</code> ?",
+  options:["Pour accéder aux fonctions avancées : RenderingHints (anticrénelage), setPaint, fill(Shape) avec Ellipse2D…","Parce que Graphics ne sait pas tracer de ligne","Pour dessiner en 2D au lieu de 3D","C'est obligatoire pour drawString"], answer:0,
+  expl:"L'objet reçu est en réalité un Graphics2D : le cast est sûr."},
+{ id:"6-1-f", tp:6, lvl:1, type:"qcm",
+  q:"Dans <code>g2d.drawString(\"UTBM\", 20, 30)</code>, que représente 30 ?",
+  options:["L'ordonnée de la <b>ligne de base</b> du texte (le bas des lettres)","Le haut du texte","La taille de la police","La largeur du texte"], answer:0,
+  expl:"Avec y = 0, le texte serait presque entièrement au-dessus du panneau, donc invisible. D'où <code>fm.getAscent()</code> dans ta SurfaceAffichage."},
+{ id:"6-1-g", tp:6, lvl:1, type:"qcm",
+  q:"Différence entre <code>drawRect</code> et <code>fillRect</code> ?",
+  options:["drawRect trace le contour, fillRect remplit le rectangle","drawRect est en 2D, fillRect en 3D","fillRect efface le panneau","Aucune"], answer:0,
+  expl:"Même logique pour drawOval/fillOval, drawArc/fillArc, draw(Shape)/fill(Shape)."},
+
+{ id:"6-2-a", tp:6, lvl:2, type:"qcm",
+  q:"Quelle forme dessinent ces 4 lignes ?",
+  code:R`g2d.drawLine(30, 30, 200, 30);
+g2d.drawLine(200, 30, 30, 200);
+g2d.drawLine(30, 200, 200, 200);
+g2d.drawLine(200, 200, 30, 30);`,
+  options:["Un sablier (deux triangles opposés par la pointe)","Un carré","Un carré avec ses deux diagonales","Une croix X seule"], answer:0,
+  expl:"Haut horizontal, diagonale haut-droite → bas-gauche, bas horizontal, diagonale bas-droite → haut-gauche : les côtés verticaux n'existent pas."},
+{ id:"6-2-b", tp:6, lvl:2, type:"qcm",
+  q:"Avec la logique de ta SurfaceAffichage : image 800×400, place dispo 400×300. Taille affichée ?",
+  code:R`double echelle = Math.min(1.0, Math.min(
+        (double) largeurDispo / largeurImage,
+        (double) hauteurDispo / hauteurImage));
+int l = (int) (largeurImage * echelle);
+int h = (int) (hauteurImage * echelle);`,
+  options:["400 × 200","400 × 300","800 × 400","600 × 300"], answer:0,
+  expl:"400/800 = 0.5 et 300/400 = 0.75 → on prend le plus petit (0.5) pour garder les proportions."},
+{ id:"6-2-c", tp:6, lvl:2, type:"qcm",
+  q:"Même code, image 200×100, place dispo 400×300. Taille affichée ?",
+  options:["200 × 100","400 × 200","400 × 300","600 × 300"], answer:0,
+  expl:"Les ratios valent 2 et 3, mais <code>Math.min(1.0, …)</code> limite l'échelle à 1 : l'image n'est jamais agrandie."},
+{ id:"6-2-d", tp:6, lvl:2, type:"qcm",
+  q:"Que voit-on ?",
+  code:R`g2d.setColor(Color.RED);
+g2d.fillRect(10, 10, 50, 50);
+g2d.setColor(Color.BLUE);
+g2d.drawOval(10, 10, 50, 50);`,
+  options:["Un carré rouge plein avec un cercle bleu (contour) inscrit dedans","Un cercle bleu plein sur un carré rouge","Un carré violet","Seulement le cercle bleu"], answer:0,
+  expl:"drawOval utilise le même rectangle englobant (10,10,50,50) : le cercle touche les 4 côtés. La couleur s'applique aux dessins suivants."},
+
+{ id:"6-3-a", tp:6, lvl:3, type:"review",
+  q:"Panneau de dessin d'une image. Trouve les <b>4 problèmes</b>.",
+  code:R`public class Surface extends JPanel {
+    private String cheminImage = "logo_utbm.png";
+    private Image image;
+
+    public void changerImage(String chemin) {
+        cheminImage = chemin;
+        paintComponent(getGraphics());
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        image = new ImageIcon(cheminImage).getImage();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.drawString("UTBM", 0, 0);
+    }
+}`,
+  bugs:[
+    {lines:[7], label:"Appel direct de paintComponent", expl:"Il faut appeler <code>repaint()</code> : Swing redessinera au bon moment, dans l'EDT, avec un Graphics valide."},
+    {lines:[11,12], label:"Pas de super.paintComponent(g)", expl:"Le fond n'est pas repeint : l'ancienne image reste visible sous la nouvelle."},
+    {lines:[13], label:"Image rechargée à chaque dessin", expl:"paintComponent est appelé très souvent (redimensionnement…) : charger le fichier à chaque fois est très lent. Charger l'image une seule fois dans changerImage / le constructeur."},
+    {lines:[15], label:"Texte dessiné à y = 0", expl:"y est la ligne de base : le texte est dessiné au-dessus du panneau, donc invisible. Utiliser par ex. <code>fm.getAscent()</code> ou y = 20."}
+  ]},
+
+{ id:"6-4-a", tp:6, lvl:4, type:"fill",
+  q:"Squelette d'un dessin (DrawForms).",
+  code:R`class Surface extends [[0]] {
+    private void doDrawing(Graphics g) {
+        Graphics2D g2d = [[1]] g;
+        g2d.setPaint(new Color(150, 150, 150));
+        g2d.[[2]](30, 20, 50, 50);        // carré plein
+        g2d.drawLine(30, 30, 200, 30);
+    }
+
+    @Override
+    public void [[3]](Graphics g) {
+        [[4]];
+        doDrawing(g);
+    }
+}
+
+public class DrawForms extends JFrame {
+    public DrawForms() {
+        [[5]](new Surface());            // place le panneau dans la fenêtre
+        setSize(350, 250);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+}`,
+  answers:[["JPanel"],["(Graphics2D)"],["fillRect"],["paintComponent"],["super.paintComponent(g)"],["add","getContentPane().add","setContentPane"]],
+  expl:"Structure identique pour DrawLines, DrawImage, DrawStrings : une JFrame qui contient un JPanel qui redéfinit paintComponent."},
+{ id:"6-4-b", tp:6, lvl:4, type:"fill",
+  q:"Mise à l'échelle et centrage de l'image (visionneuse).",
+  code:R`double echelle = Math.[[0]](1.0, Math.min(
+        (double) largeurDispo / largeurImage,
+        (double) hauteurDispo / hauteurImage));
+int l = (int) (largeurImage * echelle);
+int h = (int) (hauteurImage * echelle);
+int x = ([[1]] - l) / 2;               // centrage horizontal
+g2d.drawImage(image, x, y, l, h, null);
+
+public void setImage(Image image) {
+    this.image = image;
+    [[2]];                             // demande un nouvel affichage
+}`,
+  answers:[["min"],["getWidth()","this.getWidth()"],["repaint()","this.repaint()"]],
+  expl:"Le cast <code>(double)</code> évite la division entière (sinon 400/800 = 0)."},
+
+/* =========================== TP7 =========================== */
+{ id:"7-1-a", tp:7, lvl:1, type:"qcm",
+  q:"Quelle structure représente efficacement un graphe valué de villes ?",
+  options:["Une liste d'adjacence : <code>Map&lt;String, List&lt;Arete&gt;&gt;</code> (pour chaque ville, ses routes)","Un seul <code>ArrayList&lt;String&gt;</code> de villes","Un <code>int</code> par ville","Un <code>TreeSet&lt;Integer&gt;</code> des distances"], answer:0,
+  expl:"Autre solution vue dans ton dossier Graphe/ : une liste de Noeud et une liste d'Arete. La liste d'adjacence donne directement les voisins d'un nœud."},
+{ id:"7-1-b", tp:7, lvl:1, type:"qcm",
+  q:"Le graphe est <b>non orienté</b> (une route se prend dans les deux sens). Conséquence dans <code>ajouterArete(a, b, poids)</code> ?",
+  options:["Ajouter l'arête dans la liste de a (vers b) ET dans celle de b (vers a)","Ajouter l'arête seulement chez a","Ajouter deux fois l'arête chez a","Rien de particulier"], answer:0,
+  expl:"Sinon Dijkstra ne pourrait pas revenir de b vers a."},
+{ id:"7-1-c", tp:7, lvl:1, type:"qcm",
+  q:"Comment représenter la distance « infinie » au départ de l'algorithme ?",
+  options:["<code>Integer.MAX_VALUE</code>","<code>-1</code>","<code>0</code>","<code>null</code> obligatoirement"], answer:0,
+  expl:"Attention : <code>MAX_VALUE + poids</code> déborde et devient négatif ! D'où le <code>break</code> quand le meilleur nœud restant est encore à l'infini."},
+{ id:"7-1-d", tp:7, lvl:1, type:"qcm",
+  q:"Pourquoi l'algorithme (Dijkstra) interdit-il les distances négatives (vérifiées dans le constructeur d'Arete) ?",
+  options:["Il suppose qu'un nœud visité a sa distance définitive ; une arête négative pourrait encore la réduire plus tard","Parce que Java n'accepte pas les int négatifs dans une Map","Pour éviter une division par zéro","Parce que le graphe est non orienté"], answer:0,
+  expl:"C'est un algorithme glouton. Avec des poids négatifs il faut Bellman-Ford."},
+{ id:"7-1-e", tp:7, lvl:1, type:"qcm",
+  q:"À quoi sert la map <code>precedent</code> dans PlusCourtChemin ?",
+  options:["À reconstruire le chemin : pour chaque ville, la ville d'où l'on vient sur le meilleur trajet","À stocker les distances","À savoir quelles villes sont visitées","À trier les villes par nom"], answer:0,
+  expl:"On remonte de la cible au départ (<code>x = precedent.get(x)</code>) puis on inverse la liste."},
+{ id:"7-1-f", tp:7, lvl:1, type:"qcm",
+  q:"Avec la recherche du minimum par parcours de tous les nœuds, quelle est la complexité pour N nœuds ?",
+  options:["O(N²)","O(N)","O(log N)","O(2ᴺ)"], answer:0,
+  expl:"N tours de boucle × N nœuds parcourus pour trouver le minimum. Avec une <code>PriorityQueue</code> on descend à O((N + E) log N)."},
+{ id:"7-1-g", tp:7, lvl:1, type:"qcm",
+  q:"Pourquoi utiliser une <code>LinkedHashMap</code> plutôt qu'une <code>HashMap</code> pour les voisins ?",
+  options:["Elle conserve l'ordre d'insertion, donc un affichage stable et prévisible","Elle est triée par ordre alphabétique","Elle autorise les clés en double","Elle est thread-safe"], answer:0,
+  expl:"HashMap : ordre imprévisible. TreeMap : ordre trié des clés. LinkedHashMap : ordre d'insertion."},
+
+{ id:"7-2-a", tp:7, lvl:2, type:"qcm",
+  q:"Graphe non orienté : A–B 4, A–C 1, C–B 2, B–D 1, C–D 5. Plus courte distance de A à D ?",
+  options:["4","5","6","3"], answer:0,
+  expl:"A→C (1) → B (1+2 = 3, mieux que 4) → D (3+1 = 4, mieux que A→C→D = 6)."},
+{ id:"7-2-b", tp:7, lvl:2, type:"qcm",
+  q:"Même graphe, départ A. Dans quel ordre les nœuds sont-ils marqués visités ?",
+  options:["A, C, B, D","A, B, C, D","A, C, D, B","A, B, D, C"], answer:0,
+  expl:"On visite toujours le non-visité de plus petite distance : A(0), C(1), B(3), D(4)."},
+{ id:"7-2-c", tp:7, lvl:2, type:"qcm",
+  q:"Même graphe : que renvoie <code>chemin(\"D\")</code> ?",
+  code:R`public List<String> chemin(String cible) {
+    List<String> chemin = new ArrayList<>();
+    if (distance(cible) < 0) return chemin;
+    for (String x = cible; x != null; x = precedent.get(x)) chemin.add(x);
+    Collections.reverse(chemin);
+    return chemin;
+}`,
+  options:["[A, C, B, D]","[D, B, C, A]","[A, B, D]","[A, D]"], answer:0,
+  expl:"precedent : D→B, B→C, C→A, A n'a pas de précédent (null). On obtient [D, B, C, A] puis reverse."},
+{ id:"7-2-d", tp:7, lvl:2, type:"qcm",
+  q:"Qu'affiche ce code ?",
+  code:R`int infini = Integer.MAX_VALUE;
+int candidat = infini + 5;
+System.out.println(candidat < 100);`,
+  options:["true","false","Une ArithmeticException","Erreur de compilation"], answer:0,
+  expl:"Dépassement d'entier : MAX_VALUE + 5 « boucle » vers un très grand nombre négatif. Sans garde-fou, un nœud inatteignable donnerait des distances négatives fausses."},
+{ id:"7-2-e", tp:7, lvl:2, type:"qcm",
+  q:"Lecture de villes.txt : que vaut <code>p.length</code> ?",
+  code:R`String ligne = "  Belfort    Vesoul  65 ".trim();
+String[] p = ligne.split("\\s+");
+System.out.println(p.length);`,
+  options:["3","5","8","1"], answer:0,
+  expl:"<code>trim()</code> enlève les espaces aux extrémités et <code>\\s+</code> découpe sur un ou plusieurs espaces : [Belfort, Vesoul, 65]."},
+
+{ id:"7-3-a", tp:7, lvl:3, type:"review",
+  q:"Graphe + Dijkstra. Trouve les <b>4 problèmes</b>.",
+  code:R`public void ajouterArete(String a, String b, int poids) {
+    ajouterNoeud(a);
+    ajouterNoeud(b);
+    voisins.get(a).add(new Arete(b, poids));
+}
+
+private void calculer() {
+    for (String x : graphe.getNoeuds()) distance.put(x, Integer.MAX_VALUE);
+    distance.put(depart, 0);
+    Set<String> visites = new HashSet<>();
+    while (visites.size() < distance.size()) {
+        String m = null;
+        for (String x : graphe.getNoeuds()) {
+            if (!visites.contains(x) && (m == null || distance.get(x) > distance.get(m))) m = x;
+        }
+        for (Arete a : graphe.getVoisins(m)) {
+            String xi = a.getDestination();
+            int candidat = distance.get(m) + a.getPoids();
+            if (distance.get(xi) < candidat) {
+                distance.put(xi, candidat);
+                precedent.put(xi, m);
+            }
+        }
+        visites.add(m);
+    }
+}`,
+  bugs:[
+    {lines:[4], label:"Arête dans un seul sens", expl:"Graphe non orienté : il faut aussi <code>voisins.get(b).add(new Arete(a, poids));</code>."},
+    {lines:[14], label:"Choisit le plus LOIN", expl:"<code>&gt;</code> sélectionne le nœud de plus grande distance. Il faut le plus proche : <code>&lt;</code>."},
+    {lines:[19], label:"Comparaison inversée", expl:"On ne met à jour que si le nouveau chemin est plus court : <code>distance.get(xi) &gt; candidat</code>."},
+    {lines:[16,18], label:"Pas d'arrêt sur les nœuds inatteignables", expl:"Si le meilleur nœud restant est à MAX_VALUE, <code>MAX_VALUE + poids</code> déborde en négatif. Ajouter <code>if (distance.get(m) == Integer.MAX_VALUE) break;</code> avant la boucle sur les voisins."}
+  ]},
+
+{ id:"7-4-a", tp:7, lvl:4, type:"fill",
+  q:"Algorithme de Dijkstra (version de ton PlusCourtChemin).",
+  code:R`private void calculer() {
+    for (String x : graphe.getNoeuds()) distance.put(x, [[0]]);
+    distance.put(depart, [[1]]);
+    Set<String> visites = new HashSet<>();
+
+    while (visites.size() < distance.size()) {
+        String m = null;
+        for (String x : graphe.getNoeuds()) {
+            if (![[2]] && (m == null || distance.get(x) < distance.get(m))) m = x;
+        }
+        if (distance.get(m) == Integer.MAX_VALUE) [[3]];
+
+        for (Arete a : graphe.getVoisins(m)) {
+            String xi = a.getDestination();
+            int candidat = distance.get(m) + a.getPoids();
+            if (distance.get(xi) [[4]] candidat) {
+                distance.put(xi, candidat);
+                precedent.put(xi, m);
+            }
+        }
+        visites.[[5]](m);
+    }
+}`,
+  answers:[["Integer.MAX_VALUE"],["0"],["visites.contains(x)"],["break"],[">"],["add"]],
+  expl:"Étapes de l'énoncé : 1) d(n,n)=0, le reste à l'infini ; 2) tout non visité ; 3a) prendre le plus proche non visité et relâcher ses voisins ; 3b) le marquer visité."},
+{ id:"7-4-b", tp:7, lvl:4, type:"fill",
+  q:"Graphe non orienté + reconstruction du chemin.",
+  code:R`public void ajouterArete(String a, String b, int poids) {
+    ajouterNoeud(a);
+    ajouterNoeud(b);
+    voisins.get(a).add(new Arete(b, poids));
+    [[0]];
+}
+
+public List<String> chemin(String cible) {
+    List<String> chemin = new ArrayList<>();
+    if (distance(cible) < 0) return chemin;
+    for (String x = cible; x != null; x = [[1]]) chemin.add(x);
+    Collections.[[2]](chemin);
+    return chemin;
+}`,
+  answers:[["voisins.get(b).add(new Arete(a, poids))"],["precedent.get(x)"],["reverse"]],
+  expl:"On part de la cible et on remonte les précédents jusqu'au départ (dont le précédent est null)."},
+];
+
+</script>
+<script>
+const LV = {
+  1:{n:"Niveau 1",t:"Bases",d:"QCM de cours et de concepts"},
+  2:{n:"Niveau 2",t:"Lire le code",d:"Que fait / qu'affiche ce code ?"},
+  3:{n:"Niveau 3",t:"Revue de code",d:"Clique sur les lignes fautives"},
+  4:{n:"Niveau 4",t:"Code à trous",d:"Complète le code manquant"},
+};
+const state = { tps:new Set([1,2,3,4,5,6,7]), lvls:new Set([1,2,3,4]), queue:[], i:0, results:[], answered:false };
+
+/* ---------- stockage (facultatif) ---------- */
+let STATS = {};
+try { STATS = JSON.parse(localStorage.getItem("pr70-java-stats") || "{}"); } catch(e) { STATS = {}; }
+function saveStats(){ try { localStorage.setItem("pr70-java-stats", JSON.stringify(STATS)); } catch(e){} }
+function resetStats(){ STATS = {}; saveStats(); renderHome(); }
+
+/* ---------- utilitaires ---------- */
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const KW = new Set("abstract boolean break case catch char class continue default do double else extends final finally float for if implements import instanceof int interface long new null package private protected public return static super switch this throw throws true false try void while var".split(" "));
+function hl(src){
+  const re = /(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|('(?:[^'\\\n]|\\.)*')|(@\w+)|(\b\d+(?:\.\d+)?(?:e\d+)?[fFdDlL]?\b)|(\b[A-Za-z_]\w*\b)/gm;
+  let out = "", last = 0, m;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index));
+    const t = m[0]; let c = "";
+    if (m[1]) c = "c-com"; else if (m[2] || m[3]) c = "c-str"; else if (m[4]) c = "c-ann";
+    else if (m[5]) c = "c-num"; else if (m[6]) c = KW.has(t) ? "c-kw" : (/^[A-Z]/.test(t) ? "c-type" : "");
+    out += c ? `<span class="${c}">${esc(t)}</span>` : esc(t);
+    last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+const norm = s => s.replace(/\s+/g, "").replace(/;+$/, "");
+function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function codeBlock(src, cls){
+  return `<pre class="code ${cls||""}">` + src.split("\n").map((l, i) =>
+    `<div class="ln" data-l="${i+1}"><span class="no">${i+1}</span><span class="tx">${hl(l) || " "}</span></div>`).join("") + `</pre>`;
+}
+
+/* ---------- accueil ---------- */
+function renderHome(){
+  const chips = document.getElementById("tpChips");
+  chips.innerHTML = `<button class="chip ${state.tps.size===7?"on":""}" onclick="toggleAllTp()">Tous</button>` +
+    Object.keys(TPS).map(k => `<button class="chip ${state.tps.has(+k)?"on":""}" onclick="toggleTp(${k})" title="${TPS[k]}">TP${k}</button>`).join("");
+  document.getElementById("lvCards").innerHTML = Object.keys(LV).map(k =>
+    `<button class="lvcard ${state.lvls.has(+k)?"on":""}" onclick="toggleLv(${k})">
+      <div class="n"><span class="tag l${k}">${LV[k].n}</span></div>
+      <div class="t">${LV[k].t}</div><div class="d">${LV[k].d}</div></button>`).join("");
+  const sel = pool();
+  const errs = sel.filter(q => STATS[q.id] === 0).length;
+  document.getElementById("selInfo").textContent = `${sel.length} question(s) sélectionnée(s) · ${errs} à retravailler`;
+  document.getElementById("errBtn").disabled = errs === 0;
+
+  let h = `<thead><tr><th>TP</th>${Object.keys(LV).map(k=>`<th>${LV[k].t}</th>`).join("")}<th>Total</th></tr></thead><tbody>`;
+  for (const t of Object.keys(TPS)) {
+    h += `<tr><td><b>TP${t}</b> <span class="note">${TPS[t].split("·")[1]}</span></td>`;
+    let tot = 0, ok = 0;
+    for (const l of Object.keys(LV)) {
+      const qs = QUESTIONS.filter(q => q.tp == t && q.lvl == l);
+      const good = qs.filter(q => STATS[q.id] === 1).length;
+      tot += qs.length; ok += good;
+      h += `<td>${qs.length ? `<span class="cell">${good}/${qs.length}<span class="bar"><i style="width:${100*good/qs.length}%"></i></span></span>` : "—"}</td>`;
+    }
+    h += `<td><span class="cell"><b>${ok}/${tot}</b></span></td></tr>`;
+  }
+  document.getElementById("statTable").innerHTML = h + "</tbody>";
+}
+function toggleTp(k){ state.tps.has(k) ? state.tps.delete(k) : state.tps.add(k); renderHome(); }
+function toggleAllTp(){ state.tps = state.tps.size === 7 ? new Set() : new Set([1,2,3,4,5,6,7]); renderHome(); }
+function toggleLv(k){ state.lvls.has(k) ? state.lvls.delete(k) : state.lvls.add(k); renderHome(); }
+function pool(){ return QUESTIONS.filter(q => state.tps.has(q.tp) && state.lvls.has(q.lvl)); }
+
+function show(id){ for (const s of ["home","quiz","end"]) document.getElementById(s).classList.toggle("hidden", s !== id); window.scrollTo(0,0); }
+function showHome(){ renderHome(); show("home"); }
+
+function start(mode){
+  let qs = pool();
+  if (mode === "erreurs") qs = qs.filter(q => STATS[q.id] === 0);
+  if (!qs.length) return;
+  if (mode === "melange") qs = shuffle(qs);
+  else qs = [1,2,3,4].flatMap(l => shuffle(qs.filter(q => q.lvl === l)));
+  state.queue = qs; state.i = 0; state.results = [];
+  show("quiz"); renderQ();
+}
+
+/* ---------- question ---------- */
+function renderQ(){
+  const q = state.queue[state.i];
+  state.answered = false;
+  document.getElementById("qTags").innerHTML = `<span class="tag tp">TP${q.tp}</span><span class="tag l${q.lvl}">${LV[q.lvl].n} · ${LV[q.lvl].t}</span>`;
+  document.getElementById("qCount").textContent = `${state.i + 1} / ${state.queue.length}`;
+  document.getElementById("qBar").style.width = `${100 * state.i / state.queue.length}%`;
+  const card = document.getElementById("qCard");
+  let h = `<div class="q">${q.q}</div>`;
+
+  if (q.type === "qcm") {
+    if (q.code) h += codeBlock(q.code);
+    q._order = shuffle(q.options.map((_, i) => i));
+    h += `<div class="opts">` + q._order.map((oi, k) =>
+      `<button class="opt" data-oi="${oi}" onclick="answerQcm(${oi})"><span class="k">${"ABCD"[k]}</span><span>${q.options[oi]}</span></button>`).join("") + `</div>`;
+    h += `<p class="note" style="margin-top:12px">Raccourci : touches A B C D</p>`;
+  }
+  else if (q.type === "review") {
+    h += `<p class="hint">Clique sur une ou plusieurs lignes pour les marquer, puis valide. Une seule ligne par problème suffit.</p>`;
+    h += codeBlock(q.code, "review");
+    h += `<div class="actions"><button class="btn primary" id="validBtn" onclick="answerReview()">Valider <span class="kbd">Entrée</span></button></div>`;
+  }
+  else if (q.type === "fill") {
+    h += `<p class="hint">Complète les blancs (les blancs de même numéro attendent la même réponse). Tab pour passer au suivant.</p>`;
+    h += fillBlock(q);
+    h += `<div class="actions"><button class="btn ghost" onclick="answerFill(true)">Voir la solution</button><button class="btn primary" onclick="answerFill(false)">Valider <span class="kbd">Entrée</span></button></div>`;
+  }
+  h += `<div id="fb"></div>`;
+  card.innerHTML = h;
+
+  if (q.type === "review") card.querySelectorAll("pre.review .ln").forEach(el => el.onclick = () => { if (!state.answered) el.classList.toggle("sel"); });
+  if (q.type === "fill") { const f = card.querySelector("input.blank"); if (f) f.focus(); }
+}
+
+function fillBlock(q){
+  const lines = q.code.split("\n");
+  return `<pre class="code">` + lines.map((line, i) => {
+    const parts = line.split(/\[\[(\d+)\]\]/);
+    let tx = "";
+    parts.forEach((p, k) => {
+      if (k % 2 === 0) tx += hl(p);
+      else { const w = Math.max(4, Math.max(...q.answers[+p].map(a => a.length)) + 1);
+        tx += `<input class="blank" data-b="${p}" style="width:${w}ch" spellcheck="false" autocomplete="off" placeholder="${+p+1}">`; }
+    });
+    return `<div class="ln"><span class="no">${i+1}</span><span class="tx">${tx || " "}</span></div>`;
+  }).join("") + `</pre>`;
+}
+
+/* ---------- correction ---------- */
+function record(ok){
+  state.results.push({ q: state.queue[state.i], ok });
+  STATS[state.queue[state.i].id] = ok ? 1 : 0; saveStats();
+  state.answered = true;
+}
+function nextBtn(){
+  const last = state.i === state.queue.length - 1;
+  return `<div class="actions"><button class="btn primary" id="nextBtn" onclick="next()">${last ? "Voir le bilan" : "Question suivante"} <span class="kbd">Entrée</span></button></div>`;
+}
+function answerQcm(oi){
+  if (state.answered) return;
+  const q = state.queue[state.i]; const ok = oi === q.answer;
+  document.querySelectorAll(".opt").forEach(b => {
+    b.disabled = true; const v = +b.dataset.oi;
+    if (v === q.answer) b.classList.add("right"); else if (v === oi) b.classList.add("wrong");
+  });
+  record(ok);
+  document.getElementById("fb").innerHTML = `<div class="feedback ${ok?"good":"bad"} expl"><b class="v">${ok?"✓ Correct":"✗ Raté"}</b>${q.expl}</div>` + nextBtn();
+}
+function answerReview(){
+  if (state.answered) return;
+  const q = state.queue[state.i];
+  const lines = [...document.querySelectorAll("pre.review .ln")];
+  const sel = new Set(lines.filter(l => l.classList.contains("sel")).map(l => +l.dataset.l));
+  const bugLines = new Set(q.bugs.flatMap(b => b.lines));
+  const found = q.bugs.map(b => b.lines.some(l => sel.has(l)));
+  const fp = [...sel].filter(l => !bugLines.has(l));
+  lines.forEach(el => {
+    const n = +el.dataset.l; el.classList.remove("sel");
+    const gi = q.bugs.findIndex(b => b.lines.includes(n));
+    if (gi >= 0) el.classList.add(found[gi] ? "hit" : "miss");
+    else if (sel.has(n)) el.classList.add("fp");
+  });
+  document.querySelector("pre.review").classList.add("done");
+  const nFound = found.filter(Boolean).length;
+  const ok = nFound === q.bugs.length && fp.length <= 1;
+  record(ok);
+  const cls = ok ? "good" : (nFound > 0 ? "mid" : "bad");
+  let h = `<div class="feedback ${cls}"><b class="v">${nFound}/${q.bugs.length} problème(s) trouvé(s)${fp.length ? ` · ${fp.length} ligne(s) marquée(s) à tort (en rouge)` : ""}</b>
+    <span class="note">Vert = trouvé · pointillés orange = manqué</span><ul class="buglist">`;
+  q.bugs.forEach((b, i) => { h += `<li><span class="st" style="color:${found[i]?"var(--ok)":"var(--warn)"}">${found[i]?"✓":"○"} ${b.label}</span><span class="note">(l. ${b.lines.join(", ")})</span><br>${b.expl}</li>`; });
+  document.getElementById("fb").innerHTML = h + `</ul></div>` + nextBtn();
+  document.getElementById("validBtn").classList.add("hidden");
+}
+function answerFill(reveal){
+  if (state.answered) return;
+  const q = state.queue[state.i];
+  const inputs = [...document.querySelectorAll("input.blank")];
+  let nOk = 0;
+  inputs.forEach(inp => {
+    const acc = q.answers[+inp.dataset.b]; const good = acc.some(a => norm(a) === norm(inp.value));
+    if (good && !reveal) nOk++;
+    inp.classList.add(good && !reveal ? "ok" : "ko"); inp.readOnly = true;
+    if (!good || reveal) inp.insertAdjacentHTML("afterend", `<span class="solution">→ ${esc(acc[0])}</span>`);
+  });
+  const ok = !reveal && nOk === inputs.length;
+  record(ok);
+  const alts = q.answers.map((a, i) => a.length > 1 ? `<li><b>Blanc ${i+1}</b> : ${a.map(x => `<code>${esc(x)}</code>`).join(" ou ")}</li>` : "").join("");
+  document.getElementById("fb").innerHTML = `<div class="feedback ${ok?"good":(nOk?"mid":"bad")} expl"><b class="v">${reveal ? "Solution affichée (comptée comme à revoir)" : `${nOk}/${inputs.length} blanc(s) correct(s)`}</b>${q.expl}${alts ? `<ul style="margin:8px 0 0;padding-left:18px">${alts}</ul>` : ""}</div>` + nextBtn();
+  document.querySelectorAll("#qCard .actions")[0].classList.add("hidden");
+}
+function next(){
+  if (state.i < state.queue.length - 1) { state.i++; renderQ(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else renderEnd();
+}
+
+/* ---------- bilan ---------- */
+function renderEnd(){
+  const r = state.results, ok = r.filter(x => x.ok).length;
+  const pct = Math.round(100 * ok / r.length);
+  let h = `<div class="card end"><div class="note">Bilan de la série</div><div class="big">${ok} / ${r.length}</div>
+    <div>${pct >= 85 ? "Excellent, tu maîtrises 💪" : pct >= 60 ? "Solide — retravaille les erreurs ci-dessous." : "Il faut revoir ces notions : relance « Refaire mes erreurs »."}</div>
+    <table class="grid"><thead><tr><th>Niveau</th><th>Réussies</th></tr></thead><tbody>`;
+  for (const l of [1,2,3,4]) { const s = r.filter(x => x.q.lvl === l); if (s.length) h += `<tr><td><span class="tag l${l}">${LV[l].n}</span> ${LV[l].t}</td><td class="mono">${s.filter(x=>x.ok).length} / ${s.length}</td></tr>`; }
+  h += `</tbody></table>`;
+  const miss = r.filter(x => !x.ok);
+  if (miss.length) h += `<div class="missed"><b>À revoir :</b><ul>${miss.map(x => `<li><span class="tag tp">TP${x.q.tp}</span> <span class="tag l${x.q.lvl}">N${x.q.lvl}</span> ${x.q.q.replace(/<[^>]+>/g,"").slice(0,110)}…</li>`).join("")}</ul></div>`;
+  h += `<div class="actions" style="justify-content:center"><button class="btn" onclick="showHome()">Accueil</button>${miss.length ? `<button class="btn primary" onclick="retryMissed()">Refaire ces ${miss.length} erreur(s)</button>` : ""}</div></div>`;
+  document.getElementById("end").innerHTML = h;
+  show("end");
+}
+function retryMissed(){
+  state.queue = state.results.filter(x => !x.ok).map(x => x.q); state.i = 0; state.results = [];
+  show("quiz"); renderQ();
+}
+
+/* ---------- clavier ---------- */
+document.addEventListener("keydown", e => {
+  if (document.getElementById("quiz").classList.contains("hidden")) return;
+  const q = state.queue[state.i];
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (state.answered) return next();
+    if (q.type === "review") answerReview();
+    if (q.type === "fill") answerFill(false);
+  } else if (q.type === "qcm" && !state.answered && /^[abcd]$/i.test(e.key) && document.activeElement.tagName !== "INPUT") {
+    const k = "abcd".indexOf(e.key.toLowerCase()); if (q._order[k] !== undefined) answerQcm(q._order[k]);
+  }
+});
+
+renderHome();
+</script>
+</body>
+</html>
